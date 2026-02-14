@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wacky Fonts Typing Challenge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Creepster&family=Fredoka+One&family=Monoton&family=Bungee+Shade&family=Nosifer&family=Rubik+Glitch&family=Griffy&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --secondary: #f59e0b;
+            --success: #10b981;
+            --error: #ef4444;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --text-light: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 30px rgba(102, 102, 255, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .game-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-light);
+            border: 1px solid var(--border);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.5rem;
+        }
+
+        .game-area {
+            background: var(--bg-card);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+            min-height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 0.75rem;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .level-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .level-badge {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: var(--bg-dark);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .text-display {
+            font-size: 1.5rem;
+            line-height: 2;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 1rem;
+            border: 2px dashed var(--border);
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .text-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .char {
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .char.correct {
+            background: rgba(16, 185, 129, 0.3);
+            color: var(--success);
+        }
+
+        .char.incorrect {
+            background: rgba(239, 68, 68, 0.3);
+            color: var(--error);
+        }
+
+        .char.current {
+            background: var(--primary);
+            color: white;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .input-area {
+            position: relative;
+        }
+
+        .typing-input {
+            width: 100%;
+            padding: 1.5rem;
+            font-size: 1.25rem;
+            background: var(--bg-dark);
+            border: 2px solid var(--border);
+            border-radius: 1rem;
+            color: var(--text-light);
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: 'Inter', monospace;
+        }
+
+        .typing-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .wpm-meter {
+            position: absolute;
+            top: -3rem;
+            right: 0;
+            background: var(--success);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .wpm-meter.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .results-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .results-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .results-content {
+            background: var(--bg-card);
+            padding: 3rem;
+            border-radius: 2rem;
+            border: 1px solid var(--border);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .results-modal.show .results-content {
+            transform: scale(1);
+        }
+
+        .results-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--success);
+        }
+
+        .results-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .result-stat {
+            padding: 1rem;
+            background: var(--bg-dark);
+            border-radius: 0.75rem;
+        }
+
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .result-label {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Wacky Font Classes */
+        .font-normal { font-family: 'Inter', sans-serif; }
+        .font-creepy { font-family: 'Creepster', cursive; letter-spacing: 0.1em; }
+        .font-fun { font-family: 'Fredoka One', cursive; }
+        .font-neon { font-family: 'Monoton', cursive; text-shadow: 0 0 10px currentColor; }
+        .font-shadow { font-family: 'Bungee Shade', cursive; }
+        .font-horror { font-family: 'Nosifer', cursive; }
+        .font-glitch { font-family: 'Rubik Glitch', cursive; }
+        .font-griffy { font-family: 'Griffy', cursive; }
+
+        /* Special Effects */
+        .effect-wave {
+            animation: wave 2s ease-in-out infinite;
+        }
+
+        .effect-shake {
+            animation: shake 0.5s ease-in-out infinite;
+        }
+
+        .effect-rainbow {
+            background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: rainbow 3s linear infinite;
+            background-size: 400% 400%;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .title { font-size: 2.5rem; }
+            .text-display { font-size: 1.25rem; padding: 1rem; }
+            .typing-input { font-size: 1rem; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">Wacky Fonts Typing Challenge</h1>
+            <p class="subtitle">Master typing skills while conquering progressively chaotic fonts!</p>
+            
+            <div class="game-controls">
+                <button class="btn btn-primary" id="startBtn">Start Challenge</button>
+                <button class="btn btn-secondary" id="resetBtn">Reset Game</button>
+                <select class="btn btn-secondary" id="difficultySelect">
+                    <option value="easy">Easy Mode</option>
+                    <option value="normal" selected>Normal Mode</option>
+                    <option value="hard">Hard Mode</option>
+                    <option value="insane">Insane Mode</option>
+                </select>
+            </div>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-value" id="wpmStat">0</span>
+                <div class="stat-label">Words Per Minute</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="accuracyStat">100%</span>
+                <div class="stat-label">Accuracy</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="levelStat">1</span>
+                <div class="stat-label">Current Level</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="scoreStat">0</span>
+                <div class="stat-label">Total Score</div>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div class="level-indicator">
+                <div class="level-info">
+                    <div class="level-badge" id="levelBadge">Level 1</div>
+                    <span id="fontName">Normal Font</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div id="timer">1:00</div>
+            </div>
+
+            <div class="text-display" id="textDisplay">
+                <div class="particles" id="particles"></div>
+                <div class="text-content" id="textContent">
+                    Click "Start Challenge" to begin your typing adventure!
+                </div>
+            </div>
+
+            <div class="input-area">
+                <input type="text" class="typing-input" id="typingInput" placeholder="Start typing here..." disabled>
+                <div class="wpm-meter" id="wpmMeter">0 WPM</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="results-modal" id="resultsModal">
+        <div class="results-content">
+            <h2 class="results-title">Challenge Complete!</h2>
+            <div class="results-stats">
+                <div class="result-stat">
+                    <div class="result-value" id="finalWPM">0</div>
+                    <div class="result-label">WPM</div>
+                </div>
+                <div class="result-stat">
+                    <div class="result-value" id="finalAccuracy">0%</div>
+                    <div class="result-label">Accuracy</div>
+                </div>
+                <div class="result-stat">
+                    <div class="result-value" id="finalLevel">0</div>
+                    <div class="result-label">Max Level</div>
+                </div>
+                <div class="result-stat">
+                    <div class="result-value" id="finalScore">0</div>
+                    <div class="result-label">Score</div>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="closeResults()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        class WackyTypingGame {
+            constructor() {
+                this.currentLevel = 1;
+                this.currentText = '';
+                this.currentIndex = 0;
+                this.startTime = null;
+                this.correctChars = 0;
+                this.totalChars = 0;
+                this.gameActive = false;
+                this.timeLeft = 60;
+                this.score = 0;
+                this.difficulty = 'normal';
+                
+                this.fonts = [
+                    { name: 'Normal Font', class: 'font-normal', effect: '' },
+                    { name: 'Creepy Crawly', class: 'font-creepy', effect: '' },
+                    { name: 'Fun & Bouncy', class: 'font-fun', effect: 'effect-wave' },
+                    { name: 'Neon Glow', class: 'font-neon', effect: '' },
+                    { name: 'Shadow Text', class: 'font-shadow', effect: '' },
+                    { name: 'Horror Show', class: 'font-horror', effect: 'effect-shake' },
+                    { name: 'Glitch Matrix', class: 'font-glitch', effect: 'effect-shake' },
+                    { name: 'Rainbow Chaos', class: 'font-griffy', effect: 'effect-rainbow' }
+                ];
+
+                this.texts = [
+                    "The quick brown fox jumps over the lazy dog near the riverbank.",
+                    "Typography is the art and technique of arranging type to make written language legible and appealing.",
+                    "In a world where digital communication dominates, the ability to type quickly and accurately has become essential.",
+                    "Design thinking involves empathy, definition, ideation, prototyping, and testing to solve complex problems.",
+                    "Artificial intelligence and machine learning are transforming industries at an unprecedented pace worldwide.",
+                    "Creative professionals must balance aesthetic vision with functional requirements in every project they undertake.",
+                    "The intersection of technology and creativity opens infinite possibilities for innovative solutions and experiences.",
+                    "Mastering difficult fonts requires patience, practice, and persistent dedication to improving your typing skills consistently."
+                ];
+
+                this.initializeGame();
+            }
+
+            initializeGame() {
+                this.bindEvents();
+                this.generateParticles();
+                this.updateDisplay();
+            }
+
+            bindEvents() {
+                document.getElementById('startBtn').addEventListener('click', () => this.startGame());
+                document.getElementById('resetBtn').addEventListener('click', () => this.resetGame());
+                document.getElementById('difficultySelect').addEventListener('change', (e) => {
+                    this.difficulty = e.target.value;
+                    this.adjustDifficulty();
+                });
+                document.getElementById('typingInput').addEventListener('input', (e) => this.handleInput(e));
+            }
+
+            adjustDifficulty() {
+                const settings = {
+                    easy: { time: 90, levelThreshold: 15 },
+                    normal: { time: 60, levelThreshold: 12 },
+                    hard: { time: 45, levelThreshold: 10 },
+                    insane: { time: 30, levelThreshold: 8 }
+                };
+                
+                const setting = settings[this.difficulty];
+                this.timeLeft = setting.time;
+                this.levelThreshold = setting.levelThreshold;
+                
+                document.getElementById('timer').textContent = this.formatTime(this.timeLeft);
+            }
+
+            startGame() {
+                this.gameActive = true;
+                this.startTime = Date.now();
+                this.currentLevel = 1;
+                this.currentIndex = 0;
+                this.correctChars = 0;
+                this.totalChars = 0;
+                this.score = 0;
+                
+                this.adjustDifficulty();
+                this.loadLevel();
+                
+                document.getElementById('typingInput').disabled = false;
+                document.getElementById('typingInput').focus();
+                document.getElementById('startBtn').textContent = 'Game Active';
+                document.getElementById('startBtn').disabled = true;
+                
+                this.startTimer();
+            }
+
+            loadLevel() {
+                const font = this.fonts[Math.min(this.currentLevel - 1, this.fonts.length - 1)];
+                const text = this.texts[Math.min(this.currentLevel - 1, this.texts.length - 1)];
+                
+                this.currentText = text;
+                this.currentIndex = 0;
+                
+                document.getElementById('levelBadge').textContent = `Level ${this.currentLevel}`;
+                document.getElementById('fontName').textContent = font.name;
+                
+                this.displayText();
+                this.updateLevelProgress();
+            }
+
+            displayText() {
+                const font = this.fonts[Math.min(this.currentLevel - 1, this.fonts.length - 1)];
+                const textContent = document.getElementById('textContent');
+                
+                let html = '';
+                for (let i = 0; i < this.currentText.length; i++) {
+                    const char = this.currentText[i];
+                    let className = 'char';
+                    
+                    if (i < this.currentIndex) {
+                        className += ' correct';
+                    } else if (i === this.currentIndex) {
+                        className += ' current';
+                    }
+                    
+                    html += `<span class="${className}">${char === ' ' ? '&nbsp;' : char}</span>`;
+                }
+                
+                textContent.innerHTML = html;
+                textContent.className = `text-content ${font.class} ${font.effect}`;
+            }
+
+            handleInput(e) {
+                if (!this.gameActive) return;
+                
+                const input = e.target.value;
+                const currentChar = this.currentText[this.currentIndex];
+                
+                if (input === currentChar) {
+                    this.correctChars++;
+                    this.currentIndex++;
+                    this.score += this.currentLevel * 10;
+                    
+                    if (this.currentIndex >= this.currentText.length) {
+                        this.levelComplete();
+                    }
+                    
+                    e.target.value = '';
+                    this.displayText();
+                    this.updateWPM();
+                }
+                
+                this.totalChars++;
+                this.updateStats();
+            }
+
+            levelComplete() {
+                this.currentLevel++;
+                this.score += 500 * this.currentLevel;
+                
+                if (this.currentLevel <= this.fonts.length) {
+                    setTimeout(() => {
+                        this.loadLevel();
+                        this.showLevelTransition();
+                    }, 500);
+                } else {
+                    this.endGame();
+                }
+            }
+
+            showLevelTransition() {
+                const textContent = document.getElementById('textContent');
+                textContent.style.transform = 'scale(1.1)';
+                textContent.style.transition = 'transform 0.5s ease';
+                
+                setTimeout(() => {
+                    textContent.style.transform = 'scale(1)';
+                }, 500);
+            }
+
+            updateWPM() {
+                if (!this.startTime) return;
+                
+                const timeElapsed = (Date.now() - this.startTime) / 1000 / 60;
+                const wordsTyped = this.correctChars / 5;
+                const wpm = Math.round(wordsTyped / timeElapsed);
+                
+                const wpmMeter = document.getElementById('wpmMeter');
+                wpmMeter.textContent = `${wpm} WPM`;
+                wpmMeter.classList.add('show');
+                
+                setTimeout(() => wpmMeter.classList.remove('show'), 2000);
+            }
+
+            updateStats() {
+                const wpm = this.calculateWPM();
+                const accuracy = this.totalChars > 0 ? Math.round((this.correctChars / this.totalChars) * 100) : 100;
+                
+                document.getElementById('wpmStat').textContent = wpm;
+                document.getElementById('accuracyStat').textContent = `${accuracy}%`;
+                document.getElementById('levelStat').textContent = this.currentLevel;
+                document.getElementById('scoreStat').textContent = this.score.toLocaleString();
+            }
+
+            updateLevelProgress() {
+                const progress = (this.currentIndex / this.currentText.length) * 100;
+                document.getElementById('progressFill').style.width = `${progress}%`;
+            }
+
+            startTimer() {
+                const timer = setInterval(() => {
+                    this.timeLeft--;
+                    document.getElementById('timer').textContent = this.formatTime(this.timeLeft);
+                    
+                    if (this.timeLeft <= 0) {
+                        clearInterval(timer);
+                        this.endGame();
+                    }
+                }, 1000);
+            }
+
+            formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${mins}:${secs.toString().padStart(2, '0')}`;
+            }
+
+            calculateWPM() {
+                if (!this.startTime) return 0;
+                const timeElapsed = (Date.now() - this.startTime) / 1000 / 60;
+                const wordsTyped = this.correctChars / 5;
+                return Math.round(wordsTyped / timeElapsed) || 0;
+            }
+
+            endGame() {
+                this.gameActive = false;
+                document.getElementById('typingInput').disabled = true;
+                document.getElementById('startBtn').textContent = 'Start Challenge';
+                document.getElementById('startBtn').disabled = false;
+                
+                this.showResults();
+            }
+
+            showResults() {
+                const wpm = this.calculateWPM();
+                const accuracy = this.totalChars > 0 ? Math.round((this.correctChars / this.totalChars) * 100) : 100;
+                
+                document.getElementById('finalWPM').textContent = wpm;
+                document.getElementById('finalAccuracy').textContent = `${accuracy}%`;
+                document.getElementById('finalLevel').textContent = this.currentLevel - 1;
+                document.getElementById('finalScore').textContent = this.score.toLocaleString();
+                
+                document.getElementById('resultsModal').classList.add('show');
+            }
+
+            resetGame() {
+                this.gameActive = false;
+                this.currentLevel = 1;
+                this.currentIndex = 0;
+                this.correctChars = 0;
+                this.totalChars = 0;
+                this.score = 0;
+                this.timeLeft = 60;
+                
+                document.getElementById('typingInput').value = '';
+                document.getElementById('typingInput').disabled = true;
+                document.getElementById('startBtn').textContent = 'Start Challenge';
+                document.getElementById('startBtn').disabled = false;
+                document.getElementById('textContent').textContent = 'Click "Start Challenge" to begin your typing adventure!';
+                document.getElementById('textContent').className = 'text-content font-normal';
+                
+                this.adjustDifficulty();
+                this.updateStats();
+                this.updateDisplay();
+            }
+
+            updateDisplay() {
+                document.getElementById('progressFill').style.width = '0%';
+                document.getElementById('levelBadge').textContent = 'Level 1';
+                document.getElementById('fontName').textContent = 'Normal Font';
+            }
+
+            generateParticles() {
+                const particles = document.getElementById('particles');
+                for (let i = 0; i < 20; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 6 + 's';
+                    particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                    particles.appendChild(particle);
+                }
+            }
+        }
+
+        function closeResults() {
+            document.getElementById('resultsModal').classList.remove('show');
+        }
+
+        // Initialize the game when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new WackyTypingGame();
+        });
+    </script>
+</body>
+</html>
