@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProType Challenge - Professional Typing Game</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #4a00e0;
+            --secondary: #8e2de2;
+            --accent: #00c9ff;
+            --success: #00d26a;
+            --warning: #ffb400;
+            --danger: #ff416c;
+            --dark: #121826;
+            --light: #f8f9fa;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            padding: 20px;
+        }
+        
+        .game-container {
+            background: rgba(18, 24, 38, 0.85);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 2rem;
+            max-width: 1200px;
+            width: 100%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+            border: 1px solid var(--card-border);
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--accent), #00ffcc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem 1rem;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid var(--card-border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--secondary));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .level-indicator {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .level-badge {
+            display: inline-block;
+            padding: 0.7rem 1.5rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: pulse 2s infinite;
+            box-shadow: 0 5px 15px rgba(142, 45, 226, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .level-badge::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .game-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+        }
+        
+        .text-display {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            min-height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--card-border);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .text-content {
+            font-size: 1.5rem;
+            line-height: 1.8;
+            text-align: center;
+            max-width: 100%;
+            word-wrap: break-word;
+            transition: all 0.5s ease;
+            position: relative;
+            z-index: 2;
+            font-weight: 400;
+        }
+        
+        .char {
+            transition: all 0.2s ease;
+            position: relative;
+            padding: 0 2px;
+            border-radius: 3px;
+        }
+        
+        .char.correct {
+            color: var(--success);
+            background-color: rgba(0, 210, 106, 0.15);
+        }
+        
+        .char.incorrect {
+            color: var(--danger);
+            background-color: rgba(255, 65, 108, 0.15);
+            animation: shake 0.3s ease-in-out;
+        }
+        
+        .char.current {
+            background-color: rgba(0, 201, 255, 0.3);
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.6; }
+        }
+        
+        .input-area {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .typing-input {
+            width: 100%;
+            padding: 1.2rem;
+            font-size: 1.2rem;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.25);
+            color: var(--text-primary);
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+            font-weight: 500;
+        }
+        
+        .typing-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 201, 255, 0.2);
+        }
+        
+        .typing-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .voice-control {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--accent);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            color: var(--dark);
+        }
+        
+        .voice-control:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .voice-control.listening {
+            animation: pulse 1.5s infinite;
+            background: var(--danger);
+            color: white;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, var(--accent), #00ffcc);
+            color: var(--dark);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .progress-container {
+            margin-bottom: 1.5rem;
+        }
+        
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.1);
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #00ffcc);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 5px;
+        }
+        
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .difficulty-selector {
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .difficulty-btn {
+            margin: 0 0.5rem;
+            padding: 0.7rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .difficulty-btn.active {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-color: transparent;
+            box-shadow: 0 5px 15px rgba(142, 45, 226, 0.3);
+        }
+        
+        .difficulty-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .analytics-panel {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--card-border);
+            height: 100%;
+        }
+        
+        .panel-title {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--accent);
+        }
+        
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .analytics-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .analytics-card .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+            color: var(--accent);
+        }
+        
+        .analytics-card .label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .chart-container {
+            height: 200px;
+            margin-top: 1rem;
+        }
+        
+        .leaderboard {
+            margin-top: 2rem;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--card-border);
+        }
+        
+        .leaderboard h3 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .score-entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .score-entry:last-child {
+            border-bottom: none;
+        }
+        
+        .ai-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(0, 201, 255, 0.15);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+        
+        .multiplayer-section {
+            margin-top: 2rem;
+        }
+        
+        .players-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .player-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border: 1px solid var(--card-border);
+        }
+        
+        .player-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .player-info {
+            flex: 1;
+        }
+        
+        .player-name {
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+        
+        .player-progress {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .player-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #00ffcc);
+            width: 0%;
+        }
+        
+        @media (max-width: 900px) {
+            .game-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .title {
+                font-size: 2.2rem;
+            }
+            
+            .stats-bar {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .game-container {
+                padding: 1.5rem;
+            }
+            
+            .title {
+                font-size: 1.8rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .difficulty-selector {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .difficulty-btn {
+                margin: 0;
+            }
+            
+            .text-content {
+                font-size: 1.2rem;
+            }
+        }
+        
+        /* Animation for achievements */
+        .achievement-popup {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, #ff8e53, #ff6b6b);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+            animation: slideDown 0.5s ease-out, fadeOut 0.5s ease-out 2.5s forwards;
+        }
+        
+        @keyframes slideDown {
+            from { top: -100px; }
+            to { top: 20px; }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1 class="title">ProType Challenge</h1>
+            <p class="subtitle">Master typing with AI-powered adaptive difficulty and real-time analytics</p>
+        </div>
+        
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-label">Words Per Minute</div>
+                <div class="stat-value">78 <span class="trend-up">↑2.5%</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Accuracy</div>
+                <div class="stat-value">96% <span class="trend-up">↑1.2%</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Level</div>
+                <div class="stat-value">5 <i class="fas fa-arrow-up"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Score</div>
+                <div class="stat-value">2,450 <i class="fas fa-star"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Streak</div>
+                <div class="stat-value">42 <i class="fas fa-fire"></i></div>
+            </div>
+        </div>
+        
+        <div class="level-indicator">
+            <span class="level-badge" id="levelBadge">Level 5: Adaptive Challenge</span>
+            <div class="ai-indicator">
+                <i class="fas fa-brain"></i> AI Difficulty Adjustment Active
+            </div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 65%"></div>
+            </div>
+            <div class="progress-info">
+                <span>0%</span>
+                <span>65% Complete</span>
+                <span>100%</span>
+            </div>
+        </div>
+        
+        <div class="game-content">
+            <div class="main-content">
+                <div class="text-display">
+                    <div class="text-content font-level-1" id="textContent">
+                        <span class="char correct">T</span>
+                        <span class="char correct">h</span>
+                        <span class="char correct">e</span>
+                        <span class="char"> </span>
+                        <span class="char">q</span>
+                        <span class="char">u</span>
+                        <span class="char">i</span>
+                        <span class="char">c</span>
+                        <span class="char">k</span>
+                        <span class="char"> </span>
+                        <span class="char">b</span>
+                        <span class="char">r</span>
+                        <span class="char">o</span>
+                        <span class="char">w</span>
+                        <span class="char">n</span>
+                        <span class="char"> </span>
+                        <span class="char">f</span>
+                        <span class="char">o</span>
+                        <span class="char">x</span>
+                        <span class="char"> </span>
+                        <span class="char">j</span>
+                        <span class="char">u</span>
+                        <span class="char">m</span>
+                        <span class="char">p</span>
+                        <span class="char">s</span>
+                        <span class="char"> </span>
+                        <span class="char">o</span>
+                        <span class="char">v</span>
+                        <span class="char">e</span>
+                        <span class="char">r</span>
+                        <span class="char"> </span>
+                        <span class="char">t</span>
+                        <span class="char">h</span>
+                        <span class="char">e</span>
+                        <span class="char"> </span>
+                        <span class="char">l</span>
+                        <span class="char">a</span>
+                        <span class="char">z</span>
+                        <span class="char">y</span>
+                        <span class="char"> </span>
+                        <span class="char">d</span>
+                        <span class="char">o</span>
+                        <span class="char">g</span>
+                    </div>
+                    <div class="timer-ring">
+                        <svg class="timer-svg">
+                            <circle class="timer-circle" cx="30" cy="30" r="26"></circle>
+                            <circle class="timer-progress" cx="30" cy="30" r="26" id="timerProgress" style="stroke-dashoffset: 98.5;"></circle>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="input-area">
+                    <input type="text" class="typing-input" id="typingInput" placeholder="Start typing here...">
+                    <button class="voice-control" id="voiceControl">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn btn-primary" id="startBtn">
+                        <i class="fas fa-play"></i> Start Game
+                    </button>
+                    <button class="btn btn-secondary" id="resetBtn">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                    <button class="btn btn-secondary" id="newTextBtn">
+                        <i class="fas fa-sync"></i> New Text
+                    </button>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-cog"></i> Settings
+                    </button>
+                </div>
+                
+                <div class="difficulty-selector">
+                    <span style="opacity: 0.8; margin-right: 1rem;">Quick Start:</span>
+                    <button class="difficulty-btn active">Beginner</button>
+                    <button class="difficulty-btn">Intermediate</button>
+                    <button class="difficulty-btn">Expert</button>
+                    <button class="difficulty-btn">AI Adaptive</button>
+                </div>
+                
+                <div class="leaderboard" id="leaderboard">
+                    <h3><i class="fas fa-trophy"></i> Personal Best Scores</h3>
+                    <div id="scoresList">
+                        <div class="score-entry">
+                            <span>1. 92 WPM (98%) - Level 7</span>
+                            <span>3,450 pts</span>
+                        </div>
+                        <div class="score-entry">
+                            <span>2. 85 WPM (96%) - Level 6</span>
+                            <span>2,980 pts</span>
+                        </div>
+                        <div class="score-entry">
+                            <span>3. 78 WPM (95%) - Level 5</span>
+                            <span>2,450 pts</span>
+                        </div>
+                        <div class="score-entry">
+                            <span>4. 72 WPM (94%) - Level 5</span>
+                            <span>2,120 pts</span>
+                        </div>
+                        <div class="score-entry">
+                            <span>5. 68 WPM (92%) - Level 4</span>
+                            <span>1,870 pts</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="analytics-panel">
+                <h3 class="panel-title"><i class="fas fa-chart-line"></i> Real-time Analytics</h3>
+                
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <div class="value">78</div>
+                        <div class="label">Current WPM</div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="value">96%</div>
+                        <div class="label">Accuracy</div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="value">0.8s</div>
+                        <div class="label">Avg. Key Press</div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="value">42</div>
+                        <div class="label">Current Streak</div>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+                
+                <div class="multiplayer-section">
+                    <h3 class="panel-title"><i class="fas fa-users"></i> Multiplayer (3 Online)</h3>
+                    <div class="players-container">
+                        <div class="player-card">
+                            <div class="player-avatar">AJ</div>
+                            <div class="player-info">
+                                <div class="player-name">Alex Johnson</div>
+                                <div class="player-progress">
+                                    <div class="player-progress-fill" style="width: 75%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="player-card">
+                            <div class="player-avatar">MS</div>
+                            <div class="player-info">
+                                <div class="player-name">You</div>
+                                <div class="player-progress">
+                                    <div class="player-progress-fill" style="width: 65%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="player-card">
+                            <div class="player-avatar">TP</div>
+                            <div class="player-info">
+                                <div class="player-name">Taylor P.</div>
+                                <div class="player-progress">
+                                    <div class="player-progress-fill" style="width: 52%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize performance chart
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        const performanceChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['0s', '10s', '20s', '30s', '40s', '50s', '60s'],
+                datasets: [
+                    {
+                        label: 'WPM',
+                        data: [0, 45, 62, 70, 74, 78, 78],
+                        borderColor: '#00c9ff',
+                        backgroundColor: 'rgba(0, 201, 255, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Accuracy %',
+                        data: [0, 85, 90, 93, 95, 96, 96],
+                        borderColor: '#00d26a',
+                        backgroundColor: 'rgba(0, 210, 106, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'rgba(255, 255, 255, 0.8)',
+                            font: {
+                                size: 11
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    },
+                    y: {
+                        min: 0,
+                        max: 100,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.05)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Voice control functionality
+        const voiceControl = document.getElementById('voiceControl');
+        let recognition = null;
+        
+        voiceControl.addEventListener('click', () => {
+            if (!recognition) {
+                startVoiceRecognition();
+            } else {
+                stopVoiceRecognition();
+            }
+        });
+        
+        function startVoiceRecognition() {
+            voiceControl.classList.add('listening');
+            voiceControl.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+            
+            // In a real implementation, this would use the Web Speech API
+            // For this demo, we'll simulate voice recognition
+            setTimeout(() => {
+                // Simulate voice recognition result
+                const input = document.getElementById('typingInput');
+                input.value = "The quick brown fox jumps over the lazy dog";
+                
+                // Trigger input event to update display
+                const event = new Event('input', { bubbles: true });
+                input.dispatchEvent(event);
+                
+                // Stop listening after result
+                stopVoiceRecognition();
+                
+                // Show achievement
+                showAchievement("Voice Typing Master", "You've successfully used voice input!");
+            }, 2000);
+        }
+        
+        function stopVoiceRecognition() {
+            voiceControl.classList.remove('listening');
+            voiceControl.innerHTML = '<i class="fas fa-microphone"></i>';
+            recognition = null;
+        }
+        
+        // Achievement system
+        function showAchievement(title, description) {
+            const achievement = document.createElement('div');
+            achievement.className = 'achievement-popup';
+            achievement.innerHTML = `
+                <div><strong>${title}</strong></div>
+                <div style="font-size: 0.9rem;">${description}</div>
+            `;
+            document.body.appendChild(achievement);
+            
+            // Remove after animation
+            setTimeout(() => {
+                achievement.remove();
+            }, 3000);
+        }
+        
+        // Simulate game start
+        document.getElementById('startBtn').addEventListener('click', () => {
+            const startBtn = document.getElementById('startBtn');
+            startBtn.innerHTML = '<i class="fas fa-pause"></i> Pause Game';
+            startBtn.classList.add('btn-secondary');
+            startBtn.classList.remove('btn-primary');
+            
+            // Enable input
+            document.getElementById('typingInput').disabled = false;
+            document.getElementById('typingInput').focus();
+            
+            // Show initial achievement
+            showAchievement("Game Started!", "Your typing challenge has begun. Good luck!");
+        });
+        
+        // Difficulty buttons
+        document.querySelectorAll('.difficulty-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.difficulty-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+                btn.classList.add('active');
+                
+                // Update level badge based on difficulty
+                const levelBadge = document.getElementById('levelBadge');
+                const difficulties = {
+                    0: "Beginner: Clean & Simple",
+                    1: "Intermediate: Monospace",
+                    2: "Expert: Futuristic",
+                    3: "AI Adaptive: Smart Challenge"
+                };
+                
+                const index = Array.from(document.querySelectorAll('.difficulty-btn')).indexOf(btn);
+                levelBadge.textContent = `Level ${index + 1}: ${difficulties[index]}`;
+                
+                // Show achievement for expert mode
+                if (index === 2) {
+                    showAchievement("Expert Mode Activated", "You've selected the expert difficulty!");
+                }
+            });
+        });
+        
+        // Initialize with AI Adaptive mode selected
+        document.querySelectorAll('.difficulty-btn')[3].click();
+        
+        // Input handling simulation
+        const typingInput = document.getElementById('typingInput');
+        typingInput.addEventListener('input', function() {
+            const progressFill = document.getElementById('progressFill');
+            const progress = Math.min(100, (this.value.length / 65) * 100);
+            progressFill.style.width = `${progress}%`;
+            
+            // Simulate WPM increase as user types
+            if (performanceChart.data.datasets[0].data[6] < 95) {
+                performanceChart.data.datasets[0].data[6] += 0.5;
+                performanceChart.data.datasets[1].data[6] += 0.1;
+                performanceChart.update();
+            }
+        });
+        
+        // Show some achievements on load
+        setTimeout(() => {
+            showAchievement("Welcome to ProType!", "Get ready to improve your typing skills");
+        }, 2000);
+        
+        setTimeout(() => {
+            showAchievement("AI-Powered Learning", "Our AI will adapt to your skill level");
+        }, 5000);
+        
+        // Simulate multiplayer progress
+        setInterval(() => {
+            const playerProgresses = document.querySelectorAll('.player-progress-fill');
+            playerProgresses.forEach((progress, index) => {
+                if (index !== 1) { // Don't update the player's own progress
+                    const currentWidth = parseFloat(progress.style.width);
+                    const newWidth = Math.min(100, currentWidth + (Math.random() * 1.5));
+                    progress.style.width = `${newWidth}%`;
+                }
+            });
+        }, 1500);
+    </script>
+</body>
+</html>
