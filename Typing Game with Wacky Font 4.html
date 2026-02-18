@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FontChallenge Pro - Advanced Typing Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Creepster&family=Bungee&family=Monoton&family=Righteous&family=Fredoka+One&family=Press+Start+2P&family=Nosifer&family=Jolly+Lodger&family=Caesar+Dressing&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .title {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-top: 10px;
+        }
+
+        .game-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #4ecdc4;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .game-area {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level-indicator {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .level-badge {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            margin: 0 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ecdc4, #44a08d);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .text-display {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 1.4rem;
+            line-height: 1.6;
+            position: relative;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .char {
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .char.correct {
+            background-color: rgba(76, 175, 80, 0.3);
+            color: #4CAF50;
+        }
+
+        .char.incorrect {
+            background-color: rgba(244, 67, 54, 0.3);
+            color: #f44336;
+        }
+
+        .char.current {
+            background-color: rgba(255, 193, 7, 0.5);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .input-area {
+            position: relative;
+        }
+
+        .type-input {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            color: #ffffff;
+            font-family: 'Orbitron', monospace;
+            transition: all 0.3s ease;
+        }
+
+        .type-input:focus {
+            outline: none;
+            border-color: #4ecdc4;
+            box-shadow: 0 0 20px rgba(78, 205, 196, 0.3);
+        }
+
+        .type-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', monospace;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn.primary {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        }
+
+        .btn.danger {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+        }
+
+        .difficulty-selector {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .difficulty-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .difficulty-btn.active {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            border-color: #4ecdc4;
+        }
+
+        .achievements {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .achievement {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .achievement.unlocked {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid rgba(76, 175, 80, 0.5);
+        }
+
+        .achievement-icon {
+            font-size: 2rem;
+            margin-right: 15px;
+        }
+
+        .achievement-info h4 {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .achievement-info p {
+            margin: 5px 0 0 0;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: float 6s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .game-over-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #4ecdc4;
+        }
+
+        .final-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        /* Font progression styles */
+        .font-level-1 { font-family: 'Orbitron', monospace; }
+        .font-level-2 { font-family: 'Righteous', cursive; }
+        .font-level-3 { font-family: 'Fredoka One', cursive; transform: rotate(-1deg); }
+        .font-level-4 { font-family: 'Bungee', cursive; letter-spacing: 2px; }
+        .font-level-5 { font-family: 'Press Start 2P', monospace; font-size: 0.8em; }
+        .font-level-6 { font-family: 'Monoton', cursive; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .font-level-7 { font-family: 'Creepster', cursive; transform: skew(-5deg); }
+        .font-level-8 { font-family: 'Nosifer', cursive; animation: shake 0.5s infinite; }
+        .font-level-9 { font-family: 'Jolly Lodger', cursive; transform: rotate(2deg) scale(1.1); }
+        .font-level-10 { font-family: 'Caesar Dressing', cursive; transform: perspective(500px) rotateX(15deg); }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+
+        @media (max-width: 768px) {
+            .title { font-size: 2rem; }
+            .game-stats { grid-template-columns: 1fr 1fr; }
+            .text-display { font-size: 1.1rem; padding: 20px; }
+            .controls { flex-direction: column; align-items: center; }
+            .btn { width: 100%; max-width: 200px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="title">FontChallenge Pro</h1>
+            <p class="subtitle">Master typing through progressive font chaos</p>
+        </div>
+
+        <div class="game-stats">
+            <div class="stat-card">
+                <span class="stat-value" id="wpm">0</span>
+                <div class="stat-label">Words/Min</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="accuracy">100%</span>
+                <div class="stat-label">Accuracy</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="time">60</span>
+                <div class="stat-label">Time Left</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="score">0</span>
+                <div class="stat-label">Score</div>
+            </div>
+        </div>
+
+        <div class="difficulty-selector">
+            <button class="difficulty-btn active" data-difficulty="easy">Easy (60s)</button>
+            <button class="difficulty-btn" data-difficulty="medium">Medium (90s)</button>
+            <button class="difficulty-btn" data-difficulty="hard">Hard (120s)</button>
+            <button class="difficulty-btn" data-difficulty="expert">Expert (180s)</button>
+        </div>
+
+        <div class="game-area">
+            <div class="level-indicator">
+                <div class="level-badge" id="levelBadge">Level 1</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div style="color: #4ecdc4; font-weight: 600;" id="fontName">Orbitron</div>
+            </div>
+
+            <div class="text-display" id="textDisplay">
+                <div id="textContent">Press Start Game to begin your typing challenge!</div>
+            </div>
+
+            <div class="input-area">
+                <input type="text" class="type-input" id="typeInput" placeholder="Start typing here..." disabled>
+            </div>
+
+            <div class="controls">
+                <button class="btn primary" id="startBtn">Start Game</button>
+                <button class="btn" id="pauseBtn" disabled>Pause</button>
+                <button class="btn danger" id="resetBtn">Reset</button>
+                <button class="btn" id="skipBtn" disabled>Skip Level</button>
+            </div>
+        </div>
+
+        <div class="achievements">
+            <h3>🏆 Achievements</h3>
+            <div class="achievement-grid" id="achievementGrid">
+                <!-- Achievements will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <div class="game-over-modal" id="gameOverModal">
+        <div class="modal-content">
+            <h2 class="modal-title">Game Complete!</h2>
+            <div class="final-stats">
+                <div class="stat-card">
+                    <span class="stat-value" id="finalWPM">0</span>
+                    <div class="stat-label">Final WPM</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="finalAccuracy">0%</span>
+                    <div class="stat-label">Final Accuracy</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="finalScore">0</span>
+                    <div class="stat-label">Total Score</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="maxLevel">0</span>
+                    <div class="stat-label">Max Level</div>
+                </div>
+            </div>
+            <button class="btn primary" onclick="restartGame()">Play Again</button>
+            <button class="btn" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        class TypingGame {
+            constructor() {
+                this.texts = [
+                    "The quick brown fox jumps over the lazy dog.",
+                    "Programming is the art of telling another human what one wants the computer to do.",
+                    "Design is not just what it looks like and feels like. Design is how it works.",
+                    "The best way to predict the future is to invent it.",
+                    "Code is like humor. When you have to explain it, it's bad.",
+                    "First, solve the problem. Then, write the code.",
+                    "Experience is the name everyone gives to their mistakes.",
+                    "Simplicity is the ultimate sophistication in software design.",
+                    "The most important property of a program is whether it accomplishes the intention of its user.",
+                    "Good code is its own best documentation. As you're about to add a comment, ask yourself."
+                ];
+                
+                this.achievements = [
+                    { id: 'first_game', name: 'First Steps', description: 'Complete your first game', icon: '🎯', unlocked: false },
+                    { id: 'speed_demon', name: 'Speed Demon', description: 'Achieve 60+ WPM', icon: '⚡', unlocked: false },
+                    { id: 'accuracy_master', name: 'Accuracy Master', description: 'Maintain 95%+ accuracy', icon: '🎯', unlocked: false },
+                    { id: 'level_5', name: 'Font Fighter', description: 'Reach Level 5', icon: '🚀', unlocked: false },
+                    { id: 'level_10', name: 'Chaos Master', description: 'Reach Level 10', icon: '👑', unlocked: false },
+                    { id: 'perfectionist', name: 'Perfectionist', description: 'Complete a level with 100% accuracy', icon: '💎', unlocked: false },
+                    { id: 'endurance', name: 'Endurance Fighter', description: 'Play Expert mode', icon: '💪', unlocked: false },
+                    { id: 'high_scorer', name: 'High Scorer', description: 'Score over 5000 points', icon: '🏆', unlocked: false }
+                ];
+
+                this.initializeGame();
+                this.setupEventListeners();
+                this.createParticles();
+                this.renderAchievements();
+            }
+
+            initializeGame() {
+                this.gameState = {
+                    isPlaying: false,
+                    isPaused: false,
+                    currentLevel: 1,
+                    currentText: '',
+                    currentIndex: 0,
+                    correctChars: 0,
+                    totalChars: 0,
+                    timeLeft: 60,
+                    startTime: null,
+                    wpm: 0,
+                    accuracy: 100,
+                    score: 0,
+                    difficulty: 'easy',
+                    gameTimer: null,
+                    maxLevel: 1
+                };
+
+                this.difficultySettings = {
+                    easy: { time: 60, scoreMultiplier: 1 },
+                    medium: { time: 90, scoreMultiplier: 1.5 },
+                    hard: { time: 120, scoreMultiplier: 2 },
+                    expert: { time: 180, scoreMultiplier: 3 }
+                };
+
+                this.fontLevels = [
+                    'font-level-1', 'font-level-2', 'font-level-3', 'font-level-4', 'font-level-5',
+                    'font-level-6', 'font-level-7', 'font-level-8', 'font-level-9', 'font-level-10'
+                ];
+
+                this.fontNames = [
+                    'Orbitron', 'Righteous', 'Fredoka One', 'Bungee', 'Press Start 2P',
+                    'Monoton', 'Creepster', 'Nosifer', 'Jolly Lodger', 'Caesar Dressing'
+                ];
+            }
+
+            setupEventListeners() {
+                document.getElementById('startBtn').addEventListener('click', () => this.startGame());
+                document.getElementById('pauseBtn').addEventListener('click', () => this.togglePause());
+                document.getElementById('resetBtn').addEventListener('click', () => this.resetGame());
+                document.getElementById('skipBtn').addEventListener('click', () => this.skipLevel());
+                document.getElementById('typeInput').addEventListener('input', (e) => this.handleInput(e));
+                document.getElementById('typeInput').addEventListener('keydown', (e) => this.handleKeyDown(e));
+
+                // Difficulty selection
+                document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => this.setDifficulty(e.target.dataset.difficulty));
+                });
+            }
+
+            setDifficulty(difficulty) {
+                if (this.gameState.isPlaying) return;
+                
+                this.gameState.difficulty = difficulty;
+                this.gameState.timeLeft = this.difficultySettings[difficulty].time;
+                
+                document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelector(`[data-difficulty="${difficulty}"]`).classList.add('active');
+                
+                this.updateDisplay();
+            }
+
+            startGame() {
+                this.gameState.isPlaying = true;
+                this.gameState.isPaused = false;
+                this.gameState.startTime = Date.now();
+                this.gameState.currentText = this.getRandomText();
+                this.gameState.currentIndex = 0;
+                this.gameState.correctChars = 0;
+                this.gameState.totalChars = 0;
+                
+                document.getElementById('typeInput').disabled = false;
+                document.getElementById('typeInput').value = '';
+                document.getElementById('typeInput').focus();
+                document.getElementById('startBtn').disabled = true;
+                document.getElementById('pauseBtn').disabled = false;
+                document.getElementById('skipBtn').disabled = false;
+                
+                this.displayText();
+                this.startTimer();
+                this.updateDisplay();
+            }
+
+            getRandomText() {
+                return this.texts[Math.floor(Math.random() * this.texts.length)];
+            }
+
+            displayText() {
+                const textContent = document.getElementById('textContent');
+                const fontClass = this.fontLevels[Math.min(this.gameState.currentLevel - 1, this.fontLevels.length - 1)];
+                const fontName = this.fontNames[Math.min(this.gameState.currentLevel - 1, this.fontNames.length - 1)];
+                
+                textContent.className = fontClass;
+                document.getElementById('fontName').textContent = fontName;
+                
+                let html = '';
+                for (let i = 0; i < this.gameState.currentText.length; i++) {
+                    const char = this.gameState.currentText[i];
+                    let className = 'char';
+                    
+                    if (i < this.gameState.currentIndex) {
+                        className += ' correct';
+                    } else if (i === this.gameState.currentIndex) {
+                        className += ' current';
+                    }
+                    
+                    html += `<span class="${className}">${char === ' ' ? '&nbsp;' : char}</span>`;
+                }
+                
+                textContent.innerHTML = html;
+            }
+
+            handleInput(e) {
+                if (!this.gameState.isPlaying || this.gameState.isPaused) return;
+                
+                const inputValue = e.target.value;
+                const currentChar = this.gameState.currentText[this.gameState.currentIndex];
+                const typedChar = inputValue[inputValue.length - 1];
+                
+                if (typedChar === currentChar) {
+                    this.gameState.correctChars++;
+                    this.gameState.currentIndex++;
+                    this.gameState.totalChars++;
+                    
+                    // Check if text is completed
+                    if (this.gameState.currentIndex >= this.gameState.currentText.length) {
+                        this.levelCompleted();
+                        return;
+                    }
+                } else if (typedChar !== undefined) {
+                    this.gameState.totalChars++;
+                }
+                
+                this.calculateStats();
+                this.displayText();
+                this.updateDisplay();
+                
+                // Clear input after each character
+                e.target.value = '';
+            }
+
+            handleKeyDown(e) {
+                if (e.key === 'Escape') {
+                    this.togglePause();
+                }
+            }
+
+            levelCompleted() {
+                this.gameState.currentLevel++;
+                this.gameState.maxLevel = Math.max(this.gameState.maxLevel, this.gameState.currentLevel);
+                
+                // Add level completion bonus
+                const bonus = Math.floor(1000 * this.difficultySettings[this.gameState.difficulty].scoreMultiplier);
+                this.gameState.score += bonus;
+                
+                // Check for perfect accuracy bonus
+                if (this.gameState.accuracy === 100) {
+                    this.gameState.score += 500;
+                    this.unlockAchievement('perfectionist');
+                }
+                
+                // Check level achievements
+                if (this.gameState.currentLevel >= 5) this.unlockAchievement('level_5');
+                if (this.gameState.currentLevel >= 10) this.unlockAchievement('level_10');
+                
+                // Generate new text for next level
+                this.gameState.currentText = this.getRandomText();
+                this.gameState.currentIndex = 0;
+                
+                document.getElementById('typeInput').value = '';
+                this.displayText();
+                this.updateDisplay();
+                
+                // Show level up animation
+                this.showLevelUpAnimation();
+            }
+
+            showLevelUpAnimation() {
+                const levelBadge = document.getElementById('levelBadge');
+                levelBadge.style.transform = 'scale(1.2)';
+                levelBadge.style.background = 'linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1)';
+                
+                setTimeout(() => {
+                    levelBadge.style.transform = 'scale(1)';
+                    levelBadge.style.background = 'linear-gradient(45deg, #ff6b6b, #4ecdc4)';
+                }, 500);
+            }
+
+            skipLevel() {
+                if (!this.gameState.isPlaying || this.gameState.isPaused) return;
+                
+                // Penalty for skipping
+                this.gameState.score = Math.max(0, this.gameState.score - 200);
+                this.levelCompleted();
+            }
+
+            calculateStats() {
+                const timeElapsed = (Date.now() - this.gameState.startTime) / 1000 / 60; // in minutes
+                const wordsTyped = this.gameState.correctChars / 5; // average word length
+                
+                this.gameState.wpm = timeElapsed > 0 ? Math.round(wordsTyped / timeElapsed) : 0;
+                this.gameState.accuracy = this.gameState.totalChars > 0 ? 
+                    Math.round((this.gameState.correctChars / this.gameState.totalChars) * 100) : 100;
+                
+                // Calculate score based on WPM, accuracy, and level
+                const baseScore = this.gameState.correctChars * 10;
+                const accuracyBonus = Math.floor(baseScore * (this.gameState.accuracy / 100));
+                const levelBonus = this.gameState.currentLevel * 50;
+                const difficultyMultiplier = this.difficultySettings[this.gameState.difficulty].scoreMultiplier;
+                
+                this.gameState.score = Math.floor((baseScore + accuracyBonus + levelBonus) * difficultyMultiplier);
+                
+                // Check achievements
+                if (this.gameState.wpm >= 60) this.unlockAchievement('speed_demon');
+                if (this.gameState.accuracy >= 95) this.unlockAchievement('accuracy_master');
+                if (this.gameState.score >= 5000) this.unlockAchievement('high_scorer');
+            }
+
+            startTimer() {
+                this.gameState.gameTimer = setInterval(() => {
+                    if (this.gameState.isPaused) return;
+                    
+                    this.gameState.timeLeft--;
+                    this.updateDisplay();
+                    
+                    if (this.gameState.timeLeft <= 0) {
+                        this.endGame();
+                    }
+                }, 1000);
+            }
+
+            togglePause() {
+                if (!this.gameState.isPlaying) return;
+                
+                this.gameState.isPaused = !this.gameState.isPaused;
+                const pauseBtn = document.getElementById('pauseBtn');
+                const typeInput = document.getElementById('typeInput');
+                
+                if (this.gameState.isPaused) {
+                    pauseBtn.textContent = 'Resume';
+                    typeInput.disabled = true;
+                } else {
+                    pauseBtn.textContent = 'Pause';
+                    typeInput.disabled = false;
+                    typeInput.focus();
+                }
+            }
+
+            resetGame() {
+                if (this.gameState.gameTimer) {
+                    clearInterval(this.gameState.gameTimer);
+                }
+                
+                this.gameState.isPlaying = false;
+                this.gameState.isPaused = false;
+                this.gameState.currentLevel = 1;
+                this.gameState.currentIndex = 0;
+                this.gameState.correctChars = 0;
+                this.gameState.totalChars = 0;
+                this.gameState.timeLeft = this.difficultySettings[this.gameState.difficulty].time;
+                this.gameState.wpm = 0;
+                this.gameState.accuracy = 100;
+                this.gameState.score = 0;
+                
+                document.getElementById('typeInput').disabled = true;
+                document.getElementById('typeInput').value = '';
+                document.getElementById('startBtn').disabled = false;
+                document.getElementById('pauseBtn').disabled = true;
+                document.getElementById('pauseBtn').textContent = 'Pause';
+                document.getElementById('skipBtn').disabled = true;
+                
+                document.getElementById('textContent').textContent = 'Press Start Game to begin your typing challenge!';
+                document.getElementById('textContent').className = '';
+                
+                this.updateDisplay();
+            }
+
+            endGame() {
+                if (this.gameState.gameTimer) {
+                    clearInterval(this.gameState.gameTimer);
+                }
+                
+                this.gameState.isPlaying = false;
+                document.getElementById('typeInput').disabled = true;
+                
+                // Unlock first game achievement
+                this.unlockAchievement('first_game');
+                
+                // Check expert mode achievement
+                if (this.gameState.difficulty === 'expert') {
+                    this.unlockAchievement('endurance');
+                }
+                
+                this.showGameOverModal();
+            }
+
+            showGameOverModal() {
+                document.getElementById('finalWPM').textContent = this.gameState.wpm;
+                document.getElementById('finalAccuracy').textContent = this.gameState.accuracy + '%';
+                document.getElementById('finalScore').textContent = this.gameState.score;
+                document.getElementById('maxLevel').textContent = this.gameState.maxLevel;
+                
+                document.getElementById('gameOverModal').style.display = 'flex';
+            }
+
+            updateDisplay() {
+                document.getElementById('wpm').textContent = this.gameState.wpm;
+                document.getElementById('accuracy').textContent = this.gameState.accuracy + '%';
+                document.getElementById('time').textContent = this.gameState.timeLeft;
+                document.getElementById('score').textContent = this.gameState.score;
+                document.getElementById('levelBadge').textContent = `Level ${this.gameState.currentLevel}`;
+                
+                // Update progress bar (based on characters typed in current text)
+                const progress = (this.gameState.currentIndex / this.gameState.currentText.length) * 100;
+                document.getElementById('progressFill').style.width = progress + '%';
+                
+                // Update time color based on remaining time
+                const timeElement = document.getElementById('time');
+                if (this.gameState.timeLeft <= 10) {
+                    timeElement.style.color = '#ff6b6b';
+                } else if (this.gameState.timeLeft <= 30) {
+                    timeElement.style.color = '#ffa726';
+                } else {
+                    timeElement.style.color = '#4ecdc4';
+                }
+            }
+
+            unlockAchievement(achievementId) {
+                const achievement = this.achievements.find(a => a.id === achievementId);
+                if (achievement && !achievement.unlocked) {
+                    achievement.unlocked = true;
+                    this.renderAchievements();
+                    this.showAchievementNotification(achievement);
+                }
+            }
+
+            showAchievementNotification(achievement) {
+                // Create a temporary notification element
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(45deg, #4ecdc4, #44a08d);
+                    color: white;
+                    padding: 15px 20px;
+                    border-radius: 10px;
+                    font-family: 'Orbitron', monospace;
+                    font-weight: 600;
+                    z-index: 1001;
+                    transform: translateX(100%);
+                    transition: transform 0.3s ease;
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+                `;
+                notification.innerHTML = `
+                    <div style="display: flex; align-items: center;">
+                        <span style="font-size: 1.5rem; margin-right: 10px;">${achievement.icon}</span>
+                        <div>
+                            <div style="font-weight: 700;">Achievement Unlocked!</div>
+                            <div style="font-size: 0.9em; opacity: 0.9;">${achievement.name}</div>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Animate in
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(0)';
+                }, 100);
+                
+                // Animate out and remove
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
+
+            renderAchievements() {
+                const grid = document.getElementById('achievementGrid');
+                grid.innerHTML = '';
+                
+                this.achievements.forEach(achievement => {
+                    const achievementEl = document.createElement('div');
+                    achievementEl.className = `achievement ${achievement.unlocked ? 'unlocked' : ''}`;
+                    achievementEl.innerHTML = `
+                        <div class="achievement-icon">${achievement.unlocked ? achievement.icon : '🔒'}</div>
+                        <div class="achievement-info">
+                            <h4>${achievement.name}</h4>
+                            <p>${achievement.description}</p>
+                        </div>
+                    `;
+                    grid.appendChild(achievementEl);
+                });
+            }
+
+            createParticles() {
+                const particlesContainer = document.getElementById('particles');
+                
+                for (let i = 0; i < 50; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 6 + 's';
+                    particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                    particlesContainer.appendChild(particle);
+                }
+            }
+        }
+
+        // Global functions for modal
+        function restartGame() {
+            closeModal();
+            game.resetGame();
+        }
+
+        function closeModal() {
+            document.getElementById('gameOverModal').style.display = 'none';
+        }
+
+        // Initialize game when page loads
+        let game;
+        document.addEventListener('DOMContentLoaded', () => {
+            game = new TypingGame();
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'r') {
+                e.preventDefault();
+                game.resetGame();
+            }
+            if (e.key === 'F1') {
+                e.preventDefault();
+                if (game.gameState.isPlaying) {
+                    game.togglePause();
+                } else {
+                    game.startGame();
+                }
+            }
+        });
+
+        // Prevent context menu on right click for better gaming experience
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+        });
+
+        // Add subtle sound effects (using Web Audio API)
+        class SoundManager {
+            constructor() {
+                this.audioContext = null;
+                this.initAudio();
+            }
+
+            initAudio() {
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) {
+                    console.log('Web Audio API not supported');
+                }
+            }
+
+            playTone(frequency, duration, type = 'sine') {
+                if (!this.audioContext) return;
+
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+
+                oscillator.frequency.value = frequency;
+                oscillator.type = type;
+
+                gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+
+                oscillator.start(this.audioContext.currentTime);
+                oscillator.stop(this.audioContext.currentTime + duration);
+            }
+
+            playCorrectSound() {
+                this.playTone(800, 0.1);
+            }
+
+            playIncorrectSound() {
+                this.playTone(200, 0.2, 'sawtooth');
+            }
+
+            playLevelUpSound() {
+                this.playTone(600, 0.1);
+                setTimeout(() => this.playTone(800, 0.1), 100);
+                setTimeout(() => this.playTone(1000, 0.2), 200);
+            }
+        }
+
+        const soundManager = new SoundManager();
+
+        // Enhanced performance tracking
+        class PerformanceTracker {
+            constructor() {
+                this.sessionData = {
+                    gamesPlayed: 0,
+                    totalScore: 0,
+                    bestWPM: 0,
+                    bestAccuracy: 0,
+                    totalTimeSpent: 0,
+                    favoriteDifficulty: 'easy'
+                };
+                this.loadSessionData();
+            }
+
+            loadSessionData() {
+                // Since we can't use localStorage, we'll track session data in memory
+                // In a real application, this would be saved to localStorage or a database
+            }
+
+            recordGame(gameData) {
+                this.sessionData.gamesPlayed++;
+                this.sessionData.totalScore += gameData.score;
+                this.sessionData.bestWPM = Math.max(this.sessionData.bestWPM, gameData.wpm);
+                this.sessionData.bestAccuracy = Math.max(this.sessionData.bestAccuracy, gameData.accuracy);
+                this.sessionData.totalTimeSpent += (gameData.totalTime || 0);
+            }
+
+            getStats() {
+                return {
+                    ...this.sessionData,
+                    averageScore: this.sessionData.gamesPlayed > 0 ? 
+                        Math.round(this.sessionData.totalScore / this.sessionData.gamesPlayed) : 0
+                };
+            }
+        }
+
+        const performanceTracker = new PerformanceTracker();
+    </script>
+</body>
+</html>
