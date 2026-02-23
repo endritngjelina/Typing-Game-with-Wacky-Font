@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeChaos Pro - Advanced Typing Challenge</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            max-width: 1000px;
+            width: 95%;
+            min-height: 600px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .difficulty-selector {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .difficulty-btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            background: #f0f0f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .difficulty-btn.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .text-display {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 1rem;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .text-content {
+            font-size: 1.5rem;
+            line-height: 1.8;
+            text-align: center;
+            transition: all 0.5s ease;
+            max-width: 100%;
+        }
+
+        .char {
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .char.correct {
+            background: rgba(34, 197, 94, 0.2);
+            color: #059669;
+        }
+
+        .char.incorrect {
+            background: rgba(239, 68, 68, 0.2);
+            color: #dc2626;
+        }
+
+        .char.current {
+            background: rgba(59, 130, 246, 0.3);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .input-area {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .typing-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .typing-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #6366f1, #4f46e5);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #10b981, #059669);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .achievement-popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #f59e0b, #d97706);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
+            transform: translateX(400px);
+            transition: transform 0.5s ease;
+            z-index: 1000;
+        }
+
+        .achievement-popup.show {
+            transform: translateX(0);
+        }
+
+        .level-indicator {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .level-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #8b5cf6, #7c3aed);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .font-preview {
+            font-size: 0.9rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Wacky Font Styles */
+        .font-level-1 { font-family: 'Times New Roman', serif; }
+        .font-level-2 { font-family: 'Courier New', monospace; letter-spacing: 1px; }
+        .font-level-3 { font-family: 'Comic Sans MS', cursive; font-weight: bold; }
+        .font-level-4 { 
+            font-family: 'Impact', sans-serif; 
+            letter-spacing: 2px; 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .font-level-5 { 
+            font-family: 'Brush Script MT', cursive; 
+            font-size: 1.8rem;
+            transform: rotate(-2deg);
+        }
+        .font-level-6 { 
+            font-family: 'Chiller', fantasy; 
+            letter-spacing: 3px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+        }
+        .font-level-7 { 
+            font-family: 'Wingdings', symbol; 
+            font-size: 2rem;
+            animation: wobble 2s infinite;
+        }
+        .font-level-8 { 
+            font-family: 'Webdings', symbol;
+            transform: rotate(180deg);
+            animation: spin 10s linear infinite;
+        }
+        .font-level-9 { 
+            font-family: 'Symbol', symbol;
+            filter: blur(1px);
+            animation: shake 0.5s infinite;
+        }
+        .font-level-10 { 
+            font-family: 'Zapf Dingbats', symbol;
+            transform: scale(1.5) skew(-10deg);
+            filter: blur(2px) contrast(200%);
+            animation: chaos 1s infinite;
+        }
+
+        @keyframes wobble {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+
+        @keyframes chaos {
+            0% { transform: scale(1.5) skew(-10deg) rotate(0deg); }
+            25% { transform: scale(1.3) skew(5deg) rotate(5deg); }
+            50% { transform: scale(1.7) skew(-5deg) rotate(-3deg); }
+            75% { transform: scale(1.4) skew(8deg) rotate(2deg); }
+            100% { transform: scale(1.5) skew(-10deg) rotate(0deg); }
+        }
+
+        .game-over {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+            border-radius: 15px;
+            margin-top: 2rem;
+        }
+
+        .final-score {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .leaderboard {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+            color: #333;
+        }
+
+        .leaderboard h3 {
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .leaderboard-entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 1rem;
+                margin: 1rem;
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+            
+            .text-content {
+                font-size: 1.2rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1 class="title">TypeChaos Pro</h1>
+            <p class="subtitle">Master typing through progressively chaotic fonts</p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-label">WPM</div>
+                <div class="stat-value" id="wpm">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Accuracy</div>
+                <div class="stat-value" id="accuracy">100%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Level</div>
+                <div class="stat-value" id="level">1</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Score</div>
+                <div class="stat-value" id="score">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Time</div>
+                <div class="stat-value" id="timer">60s</div>
+            </div>
+        </div>
+
+        <div class="difficulty-selector">
+            <button class="difficulty-btn active" data-mode="practice">Practice</button>
+            <button class="difficulty-btn" data-mode="challenge">Challenge</button>
+            <button class="difficulty-btn" data-mode="nightmare">Nightmare</button>
+        </div>
+
+        <div class="level-indicator">
+            <div class="level-badge" id="level-badge">Level 1: Times New Roman</div>
+            <div class="font-preview" id="font-preview">Clean and readable serif font</div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
+        </div>
+
+        <div class="text-display">
+            <div class="text-content" id="text-display"></div>
+        </div>
+
+        <div class="input-area">
+            <input type="text" class="typing-input" id="typing-input" placeholder="Start typing here..." autocomplete="off" spellcheck="false">
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" id="start-btn">Start Game</button>
+            <button class="btn btn-secondary" id="new-text-btn">New Text</button>
+            <button class="btn btn-danger" id="reset-btn">Reset Stats</button>
+        </div>
+
+        <div id="game-over" class="game-over" style="display: none;">
+            <h2>Game Complete!</h2>
+            <div class="final-score" id="final-score">0</div>
+            <p>Congratulations on completing the typing challenge!</p>
+            <div class="leaderboard">
+                <h3>Your Best Scores</h3>
+                <div id="leaderboard-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="achievement-popup" id="achievement-popup">
+        <strong>Achievement Unlocked!</strong>
+        <div id="achievement-text"></div>
+    </div>
+
+    <script>
+        class TypingGame {
+            constructor() {
+                this.currentLevel = 1;
+                this.currentMode = 'practice';
+                this.gameActive = false;
+                this.startTime = null;
+                this.currentText = '';
+                this.userInput = '';
+                this.currentPosition = 0;
+                this.correctChars = 0;
+                this.totalChars = 0;
+                this.timeLimit = 60;
+                this.timeRemaining = 60;
+                this.score = 0;
+                this.timer = null;
+                
+                this.texts = {
+                    practice: [
+                        "The quick brown fox jumps over the lazy dog.",
+                        "Pack my box with five dozen liquor jugs.",
+                        "How vexingly quick daft zebras jump!",
+                        "Sphinx of black quartz, judge my vow.",
+                        "The five boxing wizards jump quickly."
+                    ],
+                    challenge: [
+                        "Amazingly few discotheques provide jukeboxes with very hard rock music.",
+                        "Jackdaws love my big sphinx of quartz with enthusiasm and dedication.",
+                        "The job requires extra pluck and zeal from every young wage earner working.",
+                        "My grandfather picks up quartz and valuable onyx in a woven jute bag."
+                    ],
+                    nightmare: [
+                        "Jived fox nymph grabs quick waltz. Sphinx of black quartz judge my vow!",
+                        "Cwm fjord bank glyphs vext quiz. Waltz, bad nymph, for quick jigs vex.",
+                        "Brick quiz whangs jumpy veldt fox. Bright vixens jump; dozy fowl quack."
+                    ]
+                };
+                
+                this.fontLevels = [
+                    { name: "Times New Roman", description: "Clean and readable serif font", class: "font-level-1" },
+                    { name: "Courier New", description: "Monospace typewriter style", class: "font-level-2" },
+                    { name: "Comic Sans MS", description: "Playful handwritten style", class: "font-level-3" },
+                    { name: "Impact", description: "Bold condensed sans-serif", class: "font-level-4" },
+                    { name: "Brush Script", description: "Handwritten brush strokes", class: "font-level-5" },
+                    { name: "Chiller", description: "Spooky decorative font", class: "font-level-6" },
+                    { name: "Wingdings", description: "Symbol font challenge", class: "font-level-7" },
+                    { name: "Webdings", description: "Upside-down symbols", class: "font-level-8" },
+                    { name: "Symbol Font", description: "Blurred mathematical symbols", class: "font-level-9" },
+                    { name: "Chaos Mode", description: "Ultimate font nightmare", class: "font-level-10" }
+                ];
+                
+                this.achievements = [
+                    { name: "First Steps", condition: (stats) => stats.level >= 2, message: "Completed Level 1!" },
+                    { name: "Speed Demon", condition: (stats) => stats.wpm >= 60, message: "60+ WPM achieved!" },
+                    { name: "Perfectionist", condition: (stats) => stats.accuracy >= 98, message: "98%+ accuracy!" },
+                    { name: "Font Master", condition: (stats) => stats.level >= 5, message: "Mastered 5 font levels!" },
+                    { name: "Chaos Survivor", condition: (stats) => stats.level >= 10, message: "Survived Chaos Mode!" }
+                ];
+                
+                this.unlockedAchievements = new Set();
+                this.leaderboard = JSON.parse(localStorage.getItem('typingGameLeaderboard')) || [];
+                
+                this.initializeElements();
+                this.bindEvents();
+                this.loadNewText();
+                this.updateDisplay();
+            }
+            
+            initializeElements() {
+                this.elements = {
+                    textDisplay: document.getElementById('text-display'),
+                    typingInput: document.getElementById('typing-input'),
+                    startBtn: document.getElementById('start-btn'),
+                    newTextBtn: document.getElementById('new-text-btn'),
+                    resetBtn: document.getElementById('reset-btn'),
+                    wpm: document.getElementById('wpm'),
+                    accuracy: document.getElementById('accuracy'),
+                    level: document.getElementById('level'),
+                    score: document.getElementById('score'),
+                    timer: document.getElementById('timer'),
+                    progress: document.getElementById('progress'),
+                    levelBadge: document.getElementById('level-badge'),
+                    fontPreview: document.getElementById('font-preview'),
+                    gameOver: document.getElementById('game-over'),
+                    finalScore: document.getElementById('final-score'),
+                    achievementPopup: document.getElementById('achievement-popup'),
+                    achievementText: document.getElementById('achievement-text'),
+                    leaderboardList: document.getElementById('leaderboard-list')
+                };
+            }
+            
+            bindEvents() {
+                this.elements.startBtn.addEventListener('click', () => this.startGame());
+                this.elements.newTextBtn.addEventListener('click', () => this.loadNewText());
+                this.elements.resetBtn.addEventListener('click', () => this.resetStats());
+                this.elements.typingInput.addEventListener('input', (e) => this.handleInput(e));
+                this.elements.typingInput.addEventListener('keydown', (e) => this.handleKeyDown(e));
+                
+                document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => this.changeDifficulty(e.target.dataset.mode));
+                });
+            }
+            
+            startGame() {
+                if (this.gameActive) {
+                    this.endGame();
+                    return;
+                }
+                
+                this.gameActive = true;
+                this.startTime = Date.now();
+                this.timeRemaining = this.timeLimit;
+                this.elements.startBtn.textContent = 'End Game';
+                this.elements.typingInput.focus();
+                this.elements.typingInput.disabled = false;
+                
+                this.timer = setInterval(() => {
+                    this.timeRemaining--;
+                    this.elements.timer.textContent = `${this.timeRemaining}s`;
+                    
+                    if (this.timeRemaining <= 0) {
+                        this.endGame();
+                    }
+                }, 1000);
+            }
+            
+            endGame() {
+                this.gameActive = false;
+                clearInterval(this.timer);
+                this.elements.startBtn.textContent = 'Start Game';
+                this.elements.typingInput.disabled = true;
+                
+                const finalStats = this.calculateStats();
+                this.saveScore(finalStats);
+                this.showGameOver(finalStats);
+            }
+            
+            handleInput(e) {
+                if (!this.gameActive) return;
+                
+                this.userInput = e.target.value;
+                this.currentPosition = this.userInput.length;
+                this.updateTextDisplay();
+                this.updateStats();
+                this.checkLevelProgression();
+                
+                if (this.userInput === this.currentText) {
+                    this.levelUp();
+                }
+            }
+            
+            handleKeyDown(e) {
+                if (!this.gameActive) return;
+                
+                // Handle special keys
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    this.loadNewText();
+                }
+            }
+            
+            updateTextDisplay() {
+                const textEl = this.elements.textDisplay;
+                let html = '';
+                
+                for (let i = 0; i < this.currentText.length; i++) {
+                    const char = this.currentText[i];
+                    let className = 'char';
+                    
+                    if (i < this.userInput.length) {
+                        className += this.userInput[i] === char ? ' correct' : ' incorrect';
+                    } else if (i === this.userInput.length) {
+                        className += ' current';
+                    }
+                    
+                    html += `<span class="${className}">${char === ' ' ? '&nbsp;' : char}</span>`;
+                }
+                
+                textEl.innerHTML = html;
+                
+                // Apply current font level
+                const fontLevel = this.fontLevels[this.currentLevel - 1];
+                textEl.className = `text-content ${fontLevel.class}`;
+            }
+            
+            updateStats() {
+                const stats = this.calculateStats();
+                
+                this.elements.wpm.textContent = Math.round(stats.wpm);
+                this.elements.accuracy.textContent = `${Math.round(stats.accuracy)}%`;
+                this.elements.level.textContent = this.currentLevel;
+                this.elements.score.textContent = Math.round(stats.score);
+                
+                const progress = (this.userInput.length / this.currentText.length) * 100;
+                this.elements.progress.style.width = `${progress}%`;
+                
+                this.checkAchievements(stats);
+            }
+            
+            calculateStats() {
+                const timeElapsed = this.gameActive ? (Date.now() - this.startTime) / 1000 / 60 : 0;
+                const correctChars = this.countCorrectChars();
+                const totalChars = this.userInput.length;
+                
+                const wpm = timeElapsed > 0 ? (correctChars / 5) / timeElapsed : 0;
+                const accuracy = totalChars > 0 ? (correctChars / totalChars) * 100 : 100;
+                
+                // Advanced scoring system
+                const baseScore = correctChars * 10;
+                const speedBonus = wpm * 5;
+                const accuracyBonus = (accuracy / 100) * 100;
+                const levelBonus = this.currentLevel * 50;
+                const score = baseScore + speedBonus + accuracyBonus + levelBonus;
+                
+                return {
+                    wpm,
+                    accuracy,
+                    score,
+                    level: this.currentLevel,
+                    correctChars,
+                    totalChars,
+                    timeElapsed
+                };
+            }
+            
+            countCorrectChars() {
+                let correct = 0;
+                for (let i = 0; i < Math.min(this.userInput.length, this.currentText.length); i++) {
+                    if (this.userInput[i] === this.currentText[i]) {
+                        correct++;
+                    }
+                }
+                return correct;
+            }
+            
+            checkLevelProgression() {
+                const progress = this.userInput.length / this.currentText.length;
+                
+                // Level up conditions based on difficulty
+                const levelUpThreshold = {
+                    practice: 0.8,
+                    challenge: 0.9,
+                    nightmare: 0.95
+                }[this.currentMode];
+                
+                const accuracy = this.calculateStats().accuracy;
+                const minAccuracy = {
+                    practice: 80,
+                    challenge: 85,
+                    nightmare: 90
+                }[this.currentMode];
+                
+                if (progress >= levelUpThreshold && accuracy >= minAccuracy) {
+                    this.levelUp();
+                }
+            }
+            
+            levelUp() {
+                if (this.currentLevel < this.fontLevels.length) {
+                    this.currentLevel++;
+                    this.loadNewText();
+                    this.showAchievement(`Level ${this.currentLevel} Unlocked!`, `Now using: ${this.fontLevels[this.currentLevel - 1].name}`);
+                    this.updateLevelDisplay();
+                } else {
+                    this.endGame();
+                }
+            }
+            
+            updateLevelDisplay() {
+                const fontLevel = this.fontLevels[this.currentLevel - 1];
+                this.elements.levelBadge.textContent = `Level ${this.currentLevel}: ${fontLevel.name}`;
+                this.elements.fontPreview.textContent = fontLevel.description;
+            }
+            
+            loadNewText() {
+                const textArray = this.texts[this.currentMode];
+                this.currentText = textArray[Math.floor(Math.random() * textArray.length)];
+                this.userInput = '';
+                this.currentPosition = 0;
+                this.elements.typingInput.value = '';
+                this.updateTextDisplay();
+                this.updateStats();
+            }
+            
+            changeDifficulty(mode) {
+                this.currentMode = mode;
+                this.timeLimit = {
+                    practice: 60,
+                    challenge: 45,
+                    nightmare: 30
+                }[mode];
+                this.timeRemaining = this.timeLimit;
+                this.elements.timer.textContent = `${this.timeLimit}s`;
+                
+                document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
+                
+                this.loadNewText();
+            }
+            
+            checkAchievements(stats) {
+                this.achievements.forEach(achievement => {
+                    if (!this.unlockedAchievements.has(achievement.name) && achievement.condition(stats)) {
+                        this.unlockedAchievements.add(achievement.name);
+                        this.showAchievement(achievement.name, achievement.message);
+                    }
+                });
+            }
+            
+            showAchievement(title, message) {
+                this.elements.achievementText.innerHTML = `<strong>${title}</strong><br>${message}`;
+                this.elements.achievementPopup.classList.add('show');
+                
+                setTimeout(() => {
+                    this.elements.achievementPopup.classList.remove('show');
+                }, 3000);
+            }
+            
+            saveScore(stats) {
+                const scoreEntry = {
+                    score: Math.round(stats.score),
+                    wpm: Math.round(stats.wpm),
+                    accuracy: Math.round(stats.accuracy),
+                    level: stats.level,
+                    mode: this.currentMode,
+                    date: new Date().toLocaleDateString()
+                };
+                
+                this.leaderboard.push(scoreEntry);
+                this.leaderboard.sort((a, b) => b.score - a.score);
+                this.leaderboard = this.leaderboard.slice(0, 10); // Keep top 10
+                
+                try {
+                    localStorage.setItem('typingGameLeaderboard', JSON.stringify(this.leaderboard));
+                } catch (e) {
+                    console.warn('Could not save to localStorage:', e);
+                }
+            }
+            
+            showGameOver(stats) {
+                this.elements.finalScore.textContent = Math.round(stats.score);
+                this.updateLeaderboard();
+                this.elements.gameOver.style.display = 'block';
+                this.elements.gameOver.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            updateLeaderboard() {
+                const leaderboardHtml = this.leaderboard.map((entry, index) => `
+                    <div class="leaderboard-entry">
+                        <span>#${index + 1} - ${entry.mode.toUpperCase()}</span>
+                        <span>${entry.score} pts (${entry.wpm} WPM, ${entry.accuracy}%)</span>
+                    </div>
+                `).join('');
+                
+                this.elements.leaderboardList.innerHTML = leaderboardHtml || '<div class="leaderboard-entry"><span>No scores yet</span><span>Play to set records!</span></div>';
+            }
+            
+            resetStats() {
+                if (confirm('Are you sure you want to reset all statistics and leaderboard?')) {
+                    this.currentLevel = 1;
+                    this.score = 0;
+                    this.unlockedAchievements.clear();
+                    this.leaderboard = [];
+                    this.userInput = '';
+                    this.currentPosition = 0;
+                    
+                    try {
+                        localStorage.removeItem('typingGameLeaderboard');
+                    } catch (e) {
+                        console.warn('Could not clear localStorage:', e);
+                    }
+                    
+                    this.elements.gameOver.style.display = 'none';
+                    this.updateDisplay();
+                    this.updateLevelDisplay();
+                    this.loadNewText();
+                    
+                    this.showAchievement('Fresh Start', 'All statistics have been reset!');
+                }
+            }
+            
+            updateDisplay() {
+                this.elements.wpm.textContent = '0';
+                this.elements.accuracy.textContent = '100%';
+                this.elements.level.textContent = this.currentLevel;
+                this.elements.score.textContent = '0';
+                this.elements.timer.textContent = `${this.timeLimit}s`;
+                this.elements.progress.style.width = '0%';
+                this.updateLeaderboard();
+            }
+        }
+        
+        // Enhanced text collections with progressive difficulty
+        const advancedTexts = {
+            practice: [
+                "The quick brown fox jumps over the lazy dog.",
+                "Pack my box with five dozen liquor jugs.",
+                "How vexingly quick daft zebras jump around!",
+                "Sphinx of black quartz, judge my vow today.",
+                "The five boxing wizards jump quite quickly.",
+                "Amazingly few discotheques provide jukeboxes.",
+                "Jackdaws love my big sphinx of quartz dearly.",
+                "The job requires extra pluck and zeal from workers."
+            ],
+            challenge: [
+                "Amazingly few discotheques provide jukeboxes with very hard rock music for dancing guests.",
+                "Jackdaws love my big sphinx of quartz with tremendous enthusiasm and unwavering dedication.",
+                "The job requires extra pluck and zeal from every young wage earner working diligently.",
+                "My grandfather picks up quartz and valuable onyx jewels in his favorite woven jute bag daily.",
+                "Cwm fjord bank glyphs vext quiz: waltz, bad nymph, for quick jigs vex puzzled judges.",
+                "Brick quiz whangs jumpy veldt fox: bright vixens jump quickly while dozy fowl quack loudly."
+            ],
+            nightmare: [
+                "Jived fox nymph grabs quick waltz. Sphinx of black quartz judge my vow! Cwm fjord vext.",
+                "Waltz, bad nymph, for quick jigs vex. Brick quiz whangs jumpy veldt fox bright vixens jump.",
+                "Quick zephyrs blow, vexing daft Jim. Sphinx of black quartz judge my vow and quiz pack.",
+                "Jackdaws love my big sphinx of quartz. How vexingly quick daft zebras jump around frequently!",
+                "The quick brown fox jumps over lazy dogs while amazing wizards cast powerful magical spells.",
+                "Cwm fjord bank glyphs vext quiz waltz bad nymph for quick jigs vex bright vixens jump dozy."
+            ]
+        };
+        
+        // Audio feedback system
+        class AudioManager {
+            constructor() {
+                this.audioContext = null;
+                this.initAudio();
+            }
+            
+            initAudio() {
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) {
+                    console.warn('Audio not supported');
+                }
+            }
+            
+            playTone(frequency, duration = 100, type = 'sine') {
+                if (!this.audioContext) return;
+                
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+                
+                oscillator.frequency.value = frequency;
+                oscillator.type = type;
+                
+                gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration / 1000);
+                
+                oscillator.start(this.audioContext.currentTime);
+                oscillator.stop(this.audioContext.currentTime + duration / 1000);
+            }
+            
+            playCorrect() {
+                this.playTone(800, 50);
+            }
+            
+            playIncorrect() {
+                this.playTone(200, 100, 'square');
+            }
+            
+            playLevelUp() {
+                [523, 659, 784].forEach((freq, i) => {
+                    setTimeout(() => this.playTone(freq, 200), i * 100);
+                });
+            }
+        }
+        
+        // Enhanced typing game with additional features
+        class EnhancedTypingGame extends TypingGame {
+            constructor() {
+                super();
+                this.audioManager = new AudioManager();
+                this.texts = advancedTexts; // Use enhanced text collection
+                this.lastInputWasCorrect = true;
+                this.streakCount = 0;
+                this.maxStreak = 0;
+                
+                // Add streak display
+                this.addStreakDisplay();
+                this.enhanceAchievements();
+            }
+            
+            addStreakDisplay() {
+                const streakCard = document.createElement('div');
+                streakCard.className = 'stat-card';
+                streakCard.innerHTML = `
+                    <div class="stat-label">Streak</div>
+                    <div class="stat-value" id="streak">0</div>
+                `;
+                document.querySelector('.stats-bar').appendChild(streakCard);
+                this.elements.streak = document.getElementById('streak');
+            }
+            
+            enhanceAchievements() {
+                this.achievements.push(
+                    { name: "Streak Master", condition: (stats) => stats.maxStreak >= 50, message: "50+ character streak!" },
+                    { name: "Lightning Fingers", condition: (stats) => stats.wpm >= 80, message: "80+ WPM achieved!" },
+                    { name: "Perfectionist Pro", condition: (stats) => stats.accuracy >= 99, message: "99%+ accuracy!" },
+                    { name: "Font Destroyer", condition: (stats) => stats.level >= 8, message: "Conquered 8 font levels!" },
+                    { name: "Nightmare Champion", condition: (stats) => stats.level >= 10 && stats.accuracy >= 95, message: "Mastered Chaos Mode!" }
+                );
+            }
+            
+            handleInput(e) {
+                if (!this.gameActive) return;
+                
+                const oldInput = this.userInput;
+                this.userInput = e.target.value;
+                this.currentPosition = this.userInput.length;
+                
+                // Check if the last character typed was correct
+                if (this.userInput.length > oldInput.length) {
+                    const lastChar = this.userInput[this.userInput.length - 1];
+                    const expectedChar = this.currentText[this.userInput.length - 1];
+                    
+                    if (lastChar === expectedChar) {
+                        this.streakCount++;
+                        this.maxStreak = Math.max(this.maxStreak, this.streakCount);
+                        if (this.streakCount % 10 === 0) {
+                            this.audioManager.playCorrect();
+                        }
+                        this.lastInputWasCorrect = true;
+                    } else {
+                        this.streakCount = 0;
+                        this.audioManager.playIncorrect();
+                        this.lastInputWasCorrect = false;
+                    }
+                }
+                
+                this.updateTextDisplay();
+                this.updateStats();
+                this.checkLevelProgression();
+                
+                if (this.userInput === this.currentText) {
+                    this.levelUp();
+                }
+            }
+            
+            levelUp() {
+                this.audioManager.playLevelUp();
+                super.levelUp();
+            }
+            
+            calculateStats() {
+                const stats = super.calculateStats();
+                stats.maxStreak = this.maxStreak;
+                stats.currentStreak = this.streakCount;
+                return stats;
+            }
+            
+            updateStats() {
+                super.updateStats();
+                this.elements.streak.textContent = this.streakCount;
+                
+                // Add visual feedback for streaks
+                if (this.streakCount >= 25) {
+                    this.elements.streak.style.color = '#dc2626';
+                    this.elements.streak.style.fontWeight = 'bold';
+                } else if (this.streakCount >= 10) {
+                    this.elements.streak.style.color = '#059669';
+                    this.elements.streak.style.fontWeight = 'bold';
+                } else {
+                    this.elements.streak.style.color = '#333';
+                    this.elements.streak.style.fontWeight = 'normal';
+                }
+            }
+            
+            resetStats() {
+                this.streakCount = 0;
+                this.maxStreak = 0;
+                super.resetStats();
+            }
+        }
+        
+        // Particle effects for enhanced visual feedback
+        class ParticleSystem {
+            constructor() {
+                this.particles = [];
+                this.canvas = document.createElement('canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.setupCanvas();
+                this.animate();
+            }
+            
+            setupCanvas() {
+                this.canvas.style.position = 'fixed';
+                this.canvas.style.top = '0';
+                this.canvas.style.left = '0';
+                this.canvas.style.pointerEvents = 'none';
+                this.canvas.style.zIndex = '999';
+                document.body.appendChild(this.canvas);
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+            }
+            
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+            
+            createParticle(x, y, color = '#667eea') {
+                this.particles.push({
+                    x, y,
+                    vx: (Math.random() - 0.5) * 4,
+                    vy: (Math.random() - 0.5) * 4 - 2,
+                    life: 60,
+                    maxLife: 60,
+                    color,
+                    size: Math.random() * 4 + 2
+                });
+            }
+            
+            update() {
+                this.particles = this.particles.filter(particle => {
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    particle.vy += 0.1; // gravity
+                    particle.life--;
+                    return particle.life > 0;
+                });
+            }
+            
+            render() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                this.particles.forEach(particle => {
+                    const alpha = particle.life / particle.maxLife;
+                    this.ctx.globalAlpha = alpha;
+                    this.ctx.fillStyle = particle.color;
+                    this.ctx.beginPath();
+                    this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                    this.ctx.fill();
+                });
+                
+                this.ctx.globalAlpha = 1;
+            }
+            
+            animate() {
+                this.update();
+                this.render();
+                requestAnimationFrame(() => this.animate());
+            }
+            
+            burst(x, y, count = 10, color = '#667eea') {
+                for (let i = 0; i < count; i++) {
+                    this.createParticle(x, y, color);
+                }
+            }
+        }
+        
+        // Initialize the enhanced game
+        document.addEventListener('DOMContentLoaded', () => {
+            const game = new EnhancedTypingGame();
+            const particles = new ParticleSystem();
+            
+            // Add particle effects for level ups
+            const originalLevelUp = game.levelUp.bind(game);
+            game.levelUp = function() {
+                const rect = game.elements.levelBadge.getBoundingClientRect();
+                particles.burst(rect.left + rect.width / 2, rect.top + rect.height / 2, 20, '#10b981');
+                originalLevelUp();
+            };
+            
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey || e.metaKey) {
+                    switch(e.key) {
+                        case 'Enter':
+                            e.preventDefault();
+                            game.elements.startBtn.click();
+                            break;
+                        case 'n':
+                            e.preventDefault();
+                            game.elements.newTextBtn.click();
+                            break;
+                        case 'r':
+                            e.preventDefault();
+                            game.elements.resetBtn.click();
+                            break;
+                    }
+                }
+                
+                // Easter egg: Konami code
+                if (e.key === 'ArrowUp') {
+                    game.konamiCode = (game.konamiCode || '') + 'U';
+                    if (game.konamiCode.endsWith('UUDDLRLRBA')) {
+                        game.showAchievement('Konami Master', 'Secret code activated!');
+                        game.currentLevel = Math.min(game.currentLevel + 2, 10);
+                        game.updateLevelDisplay();
+                        particles.burst(window.innerWidth / 2, window.innerHeight / 2, 50, '#f59e0b');
+                    }
+                }
+            });
+            
+            console.log('🎮 TypeChaos Pro initialized successfully!');
+            console.log('💡 Pro Tips:');
+            console.log('• Ctrl+Enter: Start/Stop game');
+            console.log('• Ctrl+N: New text');
+            console.log('• Ctrl+R: Reset stats');
+            console.log('• Tab: Skip to new text (during game)');
+            console.log('• Try the Konami code for a surprise! ↑↑↓↓←→←→BA');
+        });
+    </script>
+</body>
+</html>
