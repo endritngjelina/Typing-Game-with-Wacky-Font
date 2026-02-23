@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeMaster Pro - Progressive Font Challenge</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --border: #334155;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .tagline {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: var(--gradient);
+            transition: left 0.5s ease;
+        }
+
+        .stat-card:hover::before {
+            left: 0;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .game-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .level-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .level-badge {
+            background: var(--gradient);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .text-display {
+            background: var(--bg-primary);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1rem;
+            min-height: 120px;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .text-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .text-display.active::before {
+            opacity: 1;
+        }
+
+        .char {
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .char.correct {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .char.incorrect {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--error);
+        }
+
+        .char.current {
+            background: var(--primary);
+            color: white;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .input-area {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-family: 'JetBrains Mono', monospace;
+            resize: none;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-area:focus {
+            border-color: var(--primary);
+        }
+
+        .input-area:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .timer {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--warning);
+            font-weight: 500;
+        }
+
+        .difficulty-selector {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .difficulty-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .difficulty-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .results-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .results-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .results-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .results-modal.show .results-content {
+            transform: scale(1);
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--success);
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .result-item {
+            padding: 1rem;
+            background: var(--bg-primary);
+            border-radius: 8px;
+        }
+
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .result-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .achievements {
+            margin-top: 2rem;
+        }
+
+        .achievement-badge {
+            display: inline-block;
+            background: var(--gradient);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 0.25rem;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .leaderboard {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .leaderboard-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: var(--bg-primary);
+            border-radius: 8px;
+        }
+
+        .rank {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .settings-panel {
+            display: none;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .settings-panel.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .setting-group {
+            margin-bottom: 1rem;
+        }
+
+        .setting-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .setting-input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .game-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .controls {
+                justify-content: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Font progression classes */
+        .font-level-1 { font-family: 'Inter', sans-serif; }
+        .font-level-2 { font-family: 'Times New Roman', serif; }
+        .font-level-3 { font-family: 'Arial', sans-serif; transform: rotate(1deg); }
+        .font-level-4 { font-family: 'Courier New', monospace; letter-spacing: 2px; }
+        .font-level-5 { font-family: 'Comic Sans MS', cursive; transform: skew(-5deg); }
+        .font-level-6 { font-family: 'Impact', sans-serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .font-level-7 { font-family: 'Brush Script MT', cursive; transform: rotate(-2deg) scale(1.1); }
+        .font-level-8 { font-family: 'Webdings', fantasy; color: #ff6b6b; }
+        .font-level-9 { font-family: 'Symbol', monospace; filter: blur(1px); transform: rotate(3deg); }
+        .font-level-10 { font-family: 'Wingdings', fantasy; filter: blur(2px) hue-rotate(180deg); transform: rotate(-5deg) scale(0.9); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="logo">TypeMaster Pro</h1>
+            <p class="tagline">Master typing through progressive font challenges</p>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="wpm-stat">0</div>
+                <div class="stat-label">Words Per Minute</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="accuracy-stat">100%</div>
+                <div class="stat-label">Accuracy</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="level-stat">1</div>
+                <div class="stat-label">Current Level</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="streak-stat">0</div>
+                <div class="stat-label">Best Streak</div>
+            </div>
+        </div>
+
+        <div class="game-container">
+            <div class="game-header">
+                <div class="level-info">
+                    <div class="level-badge" id="level-badge">Level 1 - Clean & Clear</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="controls">
+                    <div class="timer" id="timer">60s</div>
+                    <button class="btn btn-primary" id="start-btn">Start Challenge</button>
+                    <button class="btn btn-secondary" id="settings-btn">Settings</button>
+                </div>
+            </div>
+
+            <div class="difficulty-selector">
+                <button class="difficulty-btn active" data-time="30">Sprint (30s)</button>
+                <button class="difficulty-btn" data-time="60">Standard (60s)</button>
+                <button class="difficulty-btn" data-time="120">Marathon (2m)</button>
+                <button class="difficulty-btn" data-time="300">Endurance (5m)</button>
+            </div>
+
+            <div class="text-display" id="text-display">
+                <p>Click "Start Challenge" to begin your typing adventure. The font will become progressively more challenging as you advance through levels!</p>
+            </div>
+
+            <textarea class="input-area" id="input-area" placeholder="Your typing will appear here..." disabled></textarea>
+        </div>
+
+        <div class="settings-panel" id="settings-panel">
+            <div class="setting-group">
+                <label class="setting-label">Sound Effects</label>
+                <select class="setting-input" id="sound-setting">
+                    <option value="on">Enabled</option>
+                    <option value="off">Disabled</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <label class="setting-label">Theme</label>
+                <select class="setting-input" id="theme-setting">
+                    <option value="dark">Dark Mode</option>
+                    <option value="light">Light Mode</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <label class="setting-label">Difficulty Scaling</label>
+                <select class="setting-input" id="scaling-setting">
+                    <option value="normal">Normal</option>
+                    <option value="aggressive">Aggressive</option>
+                    <option value="gentle">Gentle</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="leaderboard">
+            <h3 class="leaderboard-title">🏆 Personal Records</h3>
+            <div id="leaderboard-content">
+                <div class="leaderboard-item">
+                    <span>Highest WPM</span>
+                    <span class="rank" id="best-wpm">0</span>
+                </div>
+                <div class="leaderboard-item">
+                    <span>Best Accuracy</span>
+                    <span class="rank" id="best-accuracy">0%</span>
+                </div>
+                <div class="leaderboard-item">
+                    <span>Highest Level</span>
+                    <span class="rank" id="best-level">1</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="results-modal" id="results-modal">
+        <div class="results-content">
+            <h2 class="results-title">🎉 Challenge Complete!</h2>
+            <div class="results-grid">
+                <div class="result-item">
+                    <div class="result-value" id="final-wpm">0</div>
+                    <div class="result-label">Words Per Minute</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-value" id="final-accuracy">0%</div>
+                    <div class="result-label">Accuracy</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-value" id="final-level">1</div>
+                    <div class="result-label">Level Reached</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-value" id="final-chars">0</div>
+                    <div class="result-label">Characters Typed</div>
+                </div>
+            </div>
+            <div class="achievements" id="achievements"></div>
+            <button class="btn btn-primary" id="play-again-btn">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        class TypingGame {
+            constructor() {
+                this.currentText = '';
+                this.currentPosition = 0;
+                this.startTime = null;
+                this.endTime = null;
+                this.isGameActive = false;
+                this.currentLevel = 1;
+                this.totalChars = 0;
+                this.correctChars = 0;
+                this.gameTimer = null;
+                this.timeRemaining = 60;
+                this.selectedTime = 60;
+                this.wpmHistory = [];
+                this.levelProgress = 0;
+                
+                this.levelDescriptions = [
+                    'Clean & Clear',
+                    'Classic Serif',
+                    'Slightly Tilted',
+                    'Monospace Madness',
+                    'Comic Chaos',
+                    'Bold Impact',
+                    'Brushed Script',
+                    'Symbol Confusion',
+                    'Blurry Mystery',
+                    'Ultimate Challenge'
+                ];
+
+                this.sampleTexts = [
+                    "The quick brown fox jumps over the lazy dog. This pangram contains every letter of the alphabet and is perfect for typing practice.",
+                    "Programming is not about what you know; it's about what you can figure out. The best way to learn is by doing and making mistakes.",
+                    "In the world of technology, adaptability is key. Those who embrace change and continue learning will always find success in their careers.",
+                    "Data structures and algorithms form the foundation of computer science. Understanding these concepts is crucial for any aspiring developer.",
+                    "Machine learning and artificial intelligence are revolutionizing industries. The future belongs to those who can harness these technologies.",
+                    "Software engineering is both an art and a science. It requires creativity, logic, and the ability to solve complex problems efficiently.",
+                    "The internet has connected billions of people worldwide. This global network has transformed how we communicate, work, and live our daily lives.",
+                    "Cybersecurity has become increasingly important in our digital age. Protecting sensitive information requires constant vigilance and updated knowledge.",
+                    "Cloud computing has changed how businesses operate. Scalability, flexibility, and cost-effectiveness are driving this technological revolution.",
+                    "Open source software has democratized technology development. Collaboration and knowledge sharing have accelerated innovation across all industries."
+                ];
+
+                this.initializeElements();
+                this.setupEventListeners();
+                this.loadSettings();
+                this.loadLeaderboard();
+            }
+
+            initializeElements() {
+                this.elements = {
+                    textDisplay: document.getElementById('text-display'),
+                    inputArea: document.getElementById('input-area'),
+                    startBtn: document.getElementById('start-btn'),
+                    settingsBtn: document.getElementById('settings-btn'),
+                    timer: document.getElementById('timer'),
+                    levelBadge: document.getElementById('level-badge'),
+                    progressFill: document.getElementById('progress-fill'),
+                    resultsModal: document.getElementById('results-modal'),
+                    playAgainBtn: document.getElementById('play-again-btn'),
+                    settingsPanel: document.getElementById('settings-panel'),
+                    difficultyBtns: document.querySelectorAll('.difficulty-btn'),
+                    
+                    // Stats
+                    wpmStat: document.getElementById('wpm-stat'),
+                    accuracyStat: document.getElementById('accuracy-stat'),
+                    levelStat: document.getElementById('level-stat'),
+                    streakStat: document.getElementById('streak-stat'),
+                    
+                    // Results
+                    finalWpm: document.getElementById('final-wpm'),
+                    finalAccuracy: document.getElementById('final-accuracy'),
+                    finalLevel: document.getElementById('final-level'),
+                    finalChars: document.getElementById('final-chars'),
+                    achievements: document.getElementById('achievements'),
+                    
+                    // Leaderboard
+                    bestWpm: document.getElementById('best-wpm'),
+                    bestAccuracy: document.getElementById('best-accuracy'),
+                    bestLevel: document.getElementById('best-level')
+                };
+            }
+
+            setupEventListeners() {
+                this.elements.startBtn.addEventListener('click', () => this.startGame());
+                this.elements.playAgainBtn.addEventListener('click', () => this.closeResultsAndRestart());
+                this.elements.settingsBtn.addEventListener('click', () => this.toggleSettings());
+                this.elements.inputArea.addEventListener('input', (e) => this.handleInput(e));
+                this.elements.inputArea.addEventListener('paste', (e) => e.preventDefault());
+                
+                this.elements.difficultyBtns.forEach(btn => {
+                    btn.addEventListener('click', () => this.selectDifficulty(btn));
+                });
+
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && this.elements.resultsModal.classList.contains('show')) {
+                        this.closeResultsAndRestart();
+                    }
+                });
+            }
+
+            selectDifficulty(btn) {
+                this.elements.difficultyBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.selectedTime = parseInt(btn.dataset.time);
+                this.timeRemaining = this.selectedTime;
+                this.elements.timer.textContent = `${this.selectedTime}s`;
+            }
+
+            startGame() {
+                this.resetGame();
+                this.currentText = this.sampleTexts[Math.floor(Math.random() * this.sampleTexts.length)];
+                this.renderText();
+                this.elements.inputArea.disabled = false;
+                this.elements.inputArea.focus();
+                this.elements.startBtn.textContent = 'Game Active';
+                this.elements.startBtn.disabled = true;
+                this.elements.textDisplay.classList.add('active');
+                this.isGameActive = true;
+                this.startTime = Date.now();
+                
+                this.gameTimer = setInterval(() => this.updateTimer(), 1000);
+            }
+
+            resetGame() {
+                this.currentPosition = 0;
+                this.totalChars = 0;
+                this.correctChars = 0;
+                this.levelProgress = 0;
+                this.timeRemaining = this.selectedTime;
+                this.elements.inputArea.value = '';
+                this.elements.inputArea.disabled = true;
+                this.elements.startBtn.textContent = 'Start Challenge';
+                this.elements.startBtn.disabled = false;
+                this.elements.textDisplay.classList.remove('active');
+                this.elements.timer.textContent = `${this.selectedTime}s`;
+                this.isGameActive = false;
+                
+                if (this.gameTimer) {
+                    clearInterval(this.gameTimer);
+                }
+            }
+
+            renderText() {
+                const chars = this.currentText.split('').map((char, index) => {
+                    let className = 'char';
+                    if (index < this.currentPosition) {
+                        className += this.elements.inputArea.value[index] === char ? ' correct' : ' incorrect';
+                    } else if (index === this.currentPosition) {
+                        className += ' current';
+                    }
+                    return `<span class="${className}">${char === ' ' ? '&nbsp;' : char}</span>`;
+                }).join('');
+                
+                this.elements.textDisplay.innerHTML = chars;
+                this.elements.textDisplay.className = `text-display font-level-${this.currentLevel} active`;
+            }
+
+            handleInput(e) {
+                if (!this.isGameActive) return;
+                
+                const inputValue = e.target.value;
+                this.currentPosition = inputValue.length;
+                this.totalChars = this.currentPosition;
+                
+                // Calculate correct characters
+                this.correctChars = 0;
+                for (let i = 0; i < this.currentPosition; i++) {
+                    if (inputValue[i] === this.currentText[i]) {
+                        this.correctChars++;
+                    }
+                }
+                
+                this.renderText();
+                this.updateStats();
+                this.updateProgress();
+                
+                // Check for completion
+                if (this.currentPosition >= this.currentText.length) {
+                    this.nextLevel();
+                }
+            }
+
+            updateStats() {
+                const timeElapsed = (Date.now() - this.startTime) / 1000;
+                const words = this.correctChars / 5;
+                const wpm = Math.round((words / timeElapsed) * 60);
+                const accuracy = this.totalChars > 0 ? Math.round((this.correctChars / this.totalChars) * 100) : 100;
+                
+                this.elements.wpmStat.textContent = wpm || 0;
+                this.elements.accuracyStat.textContent = `${accuracy}%`;
+                this.elements.levelStat.textContent = this.currentLevel;
+            }
+
+            updateProgress() {
+                const progress = (this.currentPosition / this.currentText.length) * 100;
+                this.elements.progressFill.style.width = `${progress}%`;
+                this.levelProgress = progress;
+            }
+
+            nextLevel() {
+                this.currentLevel++;
+                this.elements.levelBadge.textContent = `Level ${this.currentLevel} - ${this.levelDescriptions[this.currentLevel - 1] || 'Master Level'}`;
+                
+                // Get new text and reset position
+                this.currentText = this.sampleTexts[Math.floor(Math.random() * this.sampleTexts.length)];
+                this.currentPosition = 0;
+                this.elements.inputArea.value = '';
+                this.renderText();
+                
+                // Visual feedback for level up
+                this.elements.levelBadge.style.animation = 'none';
+                setTimeout(() => {
+                    this.elements.levelBadge.style.animation = 'pulse 0.5s ease';
+                }, 10);
+            }
+
+            updateTimer() {
+                this.timeRemaining--;
+                this.elements.timer.textContent = `${this.timeRemaining}s`;
+                
+                if (this.timeRemaining <= 0) {
+                    this.endGame();
+                }
+            }
+
+            endGame() {
+                this.isGameActive = false;
+                this.endTime = Date.now();
+                clearInterval(this.gameTimer);
+                
+                this.elements.inputArea.disabled = true;
+                this.elements.startBtn.disabled = false;
+                this.elements.startBtn.textContent = 'Start Challenge';
+                this.elements.textDisplay.classList.remove('active');
+                
+                this.showResults();
+                this.updateLeaderboard();
+            }
+
+            showResults() {
+                const timeElapsed = this.selectedTime;
+                const words = this.correctChars / 5;
+                const wpm = Math.round((words / timeElapsed) * 60);
+                const accuracy = this.totalChars > 0 ? Math.round((this.correctChars / this.totalChars) * 100) : 100;
+                
+                this.elements.finalWpm.textContent = wpm;
+                this.elements.finalAccuracy.textContent = `${accuracy}%`;
+                this.elements.finalLevel.textContent = this.currentLevel;
+                this.elements.finalChars.textContent = this.totalChars;
+                
+                // Generate achievements
+                this.generateAchievements(wpm, accuracy, this.currentLevel);
+                
+                this.elements.resultsModal.classList.add('show');
+            }
+
+            generateAchievements(wpm, accuracy, level) {
+                const achievements = [];
+                
+                if (wpm >= 60) achievements.push('🚀 Speed Demon');
+                if (wpm >= 40) achievements.push('⚡ Fast Fingers');
+                if (accuracy >= 95) achievements.push('🎯 Precision Master');
+                if (accuracy >= 90) achievements.push('✨ Accuracy Expert');
+                if (level >= 5) achievements.push('🏆 Level Champion');
+                if (level >= 3) achievements.push('📈 Progress Maker');
+                if (this.totalChars >= 500) achievements.push('📝 Typing Marathon');
+                if (this.totalChars >= 200) achievements.push('💪 Endurance');
+                if (wpm >= 30 && accuracy >= 85) achievements.push('⚖️ Balanced Typist');
+                
+                this.elements.achievements.innerHTML = achievements
+                    .map(achievement => `<span class="achievement-badge">${achievement}</span>`)
+                    .join('');
+            }
+
+            updateLeaderboard() {
+                const timeElapsed = this.selectedTime;
+                const words = this.correctChars / 5;
+                const wpm = Math.round((words / timeElapsed) * 60);
+                const accuracy = this.totalChars > 0 ? Math.round((this.correctChars / this.totalChars) * 100) : 100;
+                
+                let records = JSON.parse(localStorage.getItem('typingRecords') || '{}');
+                
+                if (!records.bestWpm || wpm > records.bestWpm) {
+                    records.bestWpm = wpm;
+                    this.elements.bestWpm.textContent = wpm;
+                }
+                
+                if (!records.bestAccuracy || accuracy > records.bestAccuracy) {
+                    records.bestAccuracy = accuracy;
+                    this.elements.bestAccuracy.textContent = `${accuracy}%`;
+                }
+                
+                if (!records.bestLevel || this.currentLevel > records.bestLevel) {
+                    records.bestLevel = this.currentLevel;
+                    this.elements.bestLevel.textContent = this.currentLevel;
+                }
+                
+                localStorage.setItem('typingRecords', JSON.stringify(records));
+            }
+
+            loadLeaderboard() {
+                const records = JSON.parse(localStorage.getItem('typingRecords') || '{}');
+                
+                this.elements.bestWpm.textContent = records.bestWpm || 0;
+                this.elements.bestAccuracy.textContent = `${records.bestAccuracy || 0}%`;
+                this.elements.bestLevel.textContent = records.bestLevel || 1;
+            }
+
+            closeResultsAndRestart() {
+                this.elements.resultsModal.classList.remove('show');
+                this.resetGame();
+                this.currentLevel = 1;
+                this.elements.levelBadge.textContent = `Level 1 - ${this.levelDescriptions[0]}`;
+                this.elements.progressFill.style.width = '0%';
+            }
+
+            toggleSettings() {
+                const panel = this.elements.settingsPanel;
+                panel.classList.toggle('show');
+            }
+
+            loadSettings() {
+                const settings = JSON.parse(localStorage.getItem('typingSettings') || '{}');
+                
+                if (settings.sound) {
+                    document.getElementById('sound-setting').value = settings.sound;
+                }
+                if (settings.theme) {
+                    document.getElementById('theme-setting').value = settings.theme;
+                    this.applyTheme(settings.theme);
+                }
+                if (settings.scaling) {
+                    document.getElementById('scaling-setting').value = settings.scaling;
+                }
+                
+                // Add change listeners
+                document.getElementById('sound-setting').addEventListener('change', (e) => {
+                    this.saveSetting('sound', e.target.value);
+                });
+                
+                document.getElementById('theme-setting').addEventListener('change', (e) => {
+                    this.saveSetting('theme', e.target.value);
+                    this.applyTheme(e.target.value);
+                });
+                
+                document.getElementById('scaling-setting').addEventListener('change', (e) => {
+                    this.saveSetting('scaling', e.target.value);
+                });
+            }
+
+            saveSetting(key, value) {
+                const settings = JSON.parse(localStorage.getItem('typingSettings') || '{}');
+                settings[key] = value;
+                localStorage.setItem('typingSettings', JSON.stringify(settings));
+            }
+
+            applyTheme(theme) {
+                if (theme === 'light') {
+                    document.documentElement.style.setProperty('--bg-primary', '#ffffff');
+                    document.documentElement.style.setProperty('--bg-secondary', '#f8fafc');
+                    document.documentElement.style.setProperty('--bg-tertiary', '#e2e8f0');
+                    document.documentElement.style.setProperty('--text-primary', '#1e293b');
+                    document.documentElement.style.setProperty('--text-secondary', '#475569');
+                    document.documentElement.style.setProperty('--border', '#e2e8f0');
+                } else {
+                    document.documentElement.style.setProperty('--bg-primary', '#0f172a');
+                    document.documentElement.style.setProperty('--bg-secondary', '#1e293b');
+                    document.documentElement.style.setProperty('--bg-tertiary', '#334155');
+                    document.documentElement.style.setProperty('--text-primary', '#f8fafc');
+                    document.documentElement.style.setProperty('--text-secondary', '#cbd5e1');
+                    document.documentElement.style.setProperty('--border', '#334155');
+                }
+            }
+
+            // Advanced features
+            generateCustomText() {
+                const commonWords = [
+                    'the', 'and', 'for', 'are', 'but', 'not', 'you', 'all', 'can', 'had', 'her', 'was', 'one', 'our', 'out', 'day', 'get', 'has', 'him', 'his', 'how', 'man', 'new', 'now', 'old', 'see', 'two', 'way', 'who', 'boy', 'did', 'its', 'let', 'put', 'say', 'she', 'too', 'use'
+                ];
+                
+                const sentences = [];
+                for (let i = 0; i < 3; i++) {
+                    const sentence = [];
+                    const wordCount = 8 + Math.floor(Math.random() * 7);
+                    
+                    for (let j = 0; j < wordCount; j++) {
+                        sentence.push(commonWords[Math.floor(Math.random() * commonWords.length)]);
+                    }
+                    
+                    sentences.push(sentence.join(' ') + '.');
+                }
+                
+                return sentences.join(' ');
+            }
+
+            calculateDifficulty() {
+                const baseTime = this.selectedTime;
+                const scaling = document.getElementById('scaling-setting').value;
+                
+                let multiplier = 1;
+                switch (scaling) {
+                    case 'aggressive':
+                        multiplier = 1.5;
+                        break;
+                    case 'gentle':
+                        multiplier = 0.7;
+                        break;
+                    default:
+                        multiplier = 1;
+                }
+                
+                return Math.max(this.currentLevel * multiplier, 1);
+            }
+
+            playSound(type) {
+                const soundSetting = document.getElementById('sound-setting').value;
+                if (soundSetting === 'off') return;
+                
+                // Create audio context for sound effects
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                switch (type) {
+                    case 'correct':
+                        oscillator.frequency.value = 800;
+                        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                        break;
+                    case 'incorrect':
+                        oscillator.frequency.value = 200;
+                        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                        break;
+                    case 'levelup':
+                        oscillator.frequency.value = 1200;
+                        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                        break;
+                }
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.1);
+            }
+
+            // Analytics and performance tracking
+            trackPerformance() {
+                const session = {
+                    timestamp: Date.now(),
+                    wpm: Math.round((this.correctChars / 5) / (this.selectedTime / 60)),
+                    accuracy: Math.round((this.correctChars / this.totalChars) * 100),
+                    level: this.currentLevel,
+                    duration: this.selectedTime,
+                    chars: this.totalChars
+                };
+                
+                let sessions = JSON.parse(localStorage.getItem('typingSessions') || '[]');
+                sessions.push(session);
+                
+                // Keep only last 50 sessions
+                if (sessions.length > 50) {
+                    sessions = sessions.slice(-50);
+                }
+                
+                localStorage.setItem('typingSessions', JSON.stringify(sessions));
+            }
+
+            getPerformanceInsights() {
+                const sessions = JSON.parse(localStorage.getItem('typingSessions') || '[]');
+                if (sessions.length < 3) return null;
+                
+                const recent = sessions.slice(-10);
+                const avgWpm = recent.reduce((sum, s) => sum + s.wpm, 0) / recent.length;
+                const avgAccuracy = recent.reduce((sum, s) => sum + s.accuracy, 0) / recent.length;
+                
+                return {
+                    averageWpm: Math.round(avgWpm),
+                    averageAccuracy: Math.round(avgAccuracy),
+                    improvement: recent[recent.length - 1].wpm - recent[0].wpm,
+                    sessionsPlayed: sessions.length
+                };
+            }
+        }
+
+        // Initialize the game when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const game = new TypingGame();
+            
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey || e.metaKey) {
+                    switch (e.key) {
+                        case 'Enter':
+                            e.preventDefault();
+                            if (!game.isGameActive) {
+                                game.startGame();
+                            }
+                            break;
+                        case 'r':
+                            e.preventDefault();
+                            game.resetGame();
+                            break;
+                    }
+                }
+            });
+
+            // Add touch support for mobile
+            let touchStartY = 0;
+            document.addEventListener('touchstart', (e) => {
+                touchStartY = e.touches[0].clientY;
+            });
+
+            document.addEventListener('touchend', (e) => {
+                const touchEndY = e.changedTouches[0].clientY;
+                const diff = touchStartY - touchEndY;
+                
+                // Swipe up to start game
+                if (diff > 50 && !game.isGameActive) {
+                    game.startGame();
+                }
+            });
+
+            // Performance monitoring
+            let performanceMetrics = {
+                frameRate: 0,
+                lastFrameTime: performance.now()
+            };
+
+            function updatePerformanceMetrics() {
+                const now = performance.now();
+                const deltaTime = now - performanceMetrics.lastFrameTime;
+                performanceMetrics.frameRate = 1000 / deltaTime;
+                performanceMetrics.lastFrameTime = now;
+                
+                requestAnimationFrame(updatePerformanceMetrics);
+            }
+            
+            updatePerformanceMetrics();
+
+            // Auto-save progress
+            setInterval(() => {
+                if (game.isGameActive) {
+                    const progress = {
+                        level: game.currentLevel,
+                        position: game.currentPosition,
+                        startTime: game.startTime,
+                        correctChars: game.correctChars,
+                        totalChars: game.totalChars
+                    };
+                    localStorage.setItem('gameProgress', JSON.stringify(progress));
+                }
+            }, 5000);
+
+            // Load saved progress
+            const savedProgress = localStorage.getItem('gameProgress');
+            if (savedProgress) {
+                const progress = JSON.parse(savedProgress);
+                // Could implement resume functionality here
+            }
+        });
+    </script>
+</body>
+</html>
