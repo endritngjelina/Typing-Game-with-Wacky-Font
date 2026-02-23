@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeChaos Pro - Dynamic Typing Challenge</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Creepster&family=Nosifer&family=Butcherman&family=Chiller&family=Eater&family=Fascinate&family=Fredericka+the+Great&family=Griffy&family=Horror&family=Metal+Mania&family=Pirata+One&family=Rye&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 400% 400%;
+            animation: backgroundShift 15s ease-in-out infinite;
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .title {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .game-area {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(25px);
+            border-radius: 25px;
+            padding: 35px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #4ecdc4, #44a08d, #667eea, #764ba2);
+            background-size: 300% 100%;
+            animation: borderFlow 4s linear infinite;
+        }
+
+        @keyframes borderFlow {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 300% 0%; }
+        }
+
+        .level-indicator {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .level-badge {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .difficulty-meter {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .difficulty-bar {
+            width: 30px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        .difficulty-bar.active {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+        }
+
+        /* Enhanced Immersive Text Display */
+        .text-display {
+            background: linear-gradient(145deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3));
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 40px;
+            margin-bottom: 25px;
+            min-height: 200px;
+            font-size: 1.5rem;
+            line-height: 2.2;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 
+                inset 0 4px 20px rgba(0, 0, 0, 0.4),
+                0 10px 30px rgba(0, 0, 0, 0.3),
+                0 0 50px rgba(78, 205, 196, 0.1);
+            transform-style: preserve-3d;
+        }
+
+        .text-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 20%, rgba(78, 205, 196, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.02), transparent);
+            transform: translateX(-100%);
+            animation: ambientShimmer 6s infinite;
+            z-index: 0;
+        }
+
+        .text-display::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(78, 205, 196, 0.6), 
+                rgba(102, 126, 234, 0.6), 
+                transparent);
+            z-index: 1;
+        }
+
+        @keyframes ambientShimmer {
+            0%, 100% { transform: translateX(-100%) scale(1); }
+            50% { transform: translateX(100%) scale(1.1); }
+        }
+
+        /* Dynamic Font Hover Effects */
+        .text-display:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 
+                inset 0 4px 20px rgba(0, 0, 0, 0.4),
+                0 15px 40px rgba(0, 0, 0, 0.4),
+                0 0 60px rgba(78, 205, 196, 0.2);
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Advanced Character Animation System */
+        .char {
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border-radius: 6px;
+            padding: 3px 2px;
+            display: inline-block;
+            transform-origin: center;
+        }
+
+        .char.correct {
+            background: linear-gradient(135deg, 
+                rgba(76, 175, 80, 0.5), 
+                rgba(129, 199, 132, 0.4),
+                rgba(165, 214, 167, 0.3));
+            color: #A5D6A7;
+            box-shadow: 
+                0 4px 12px rgba(76, 175, 80, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transform: scale(1.08) translateY(-2px);
+            animation: correctBounce 0.4s ease-out;
+        }
+
+        @keyframes correctBounce {
+            0% { transform: scale(1) translateY(0); }
+            50% { transform: scale(1.15) translateY(-4px); }
+            100% { transform: scale(1.08) translateY(-2px); }
+        }
+
+        .char.incorrect {
+            background: linear-gradient(135deg, 
+                rgba(244, 67, 54, 0.5), 
+                rgba(229, 115, 115, 0.4),
+                rgba(239, 154, 154, 0.3));
+            color: #FFAB91;
+            box-shadow: 
+                0 4px 12px rgba(244, 67, 54, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: incorrectWiggle 0.5s ease-in-out;
+            transform: scale(1.05);
+        }
+
+        @keyframes incorrectWiggle {
+            0%, 100% { transform: translateX(0) scale(1.05) rotate(0deg); }
+            20% { transform: translateX(-4px) scale(1.1) rotate(-2deg); }
+            40% { transform: translateX(4px) scale(1.1) rotate(2deg); }
+            60% { transform: translateX(-3px) scale(1.08) rotate(-1deg); }
+            80% { transform: translateX(2px) scale(1.06) rotate(1deg); }
+        }
+
+        .char.current {
+            background: linear-gradient(135deg, 
+                rgba(255, 193, 7, 0.6), 
+                rgba(255, 235, 59, 0.5),
+                rgba(255, 241, 118, 0.4));
+            color: #FFF9C4;
+            box-shadow: 
+                0 0 20px rgba(255, 193, 7, 0.5),
+                0 4px 15px rgba(255, 193, 7, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            animation: currentBreathe 1.5s infinite ease-in-out;
+            transform: scale(1.12);
+            z-index: 10;
+        }
+
+        @keyframes currentBreathe {
+            0%, 100% { 
+                transform: scale(1.12) rotateZ(0deg);
+                box-shadow: 
+                    0 0 20px rgba(255, 193, 7, 0.5),
+                    0 4px 15px rgba(255, 193, 7, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            }
+            50% { 
+                transform: scale(1.18) rotateZ(1deg);
+                box-shadow: 
+                    0 0 30px rgba(255, 193, 7, 0.7),
+                    0 6px 20px rgba(255, 193, 7, 0.4),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            }
+        }
+
+        /* Particle effects for correct typing */
+        .char.correct::after {
+            content: '✨';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            opacity: 0;
+            animation: sparkle 0.6s ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes sparkle {
+            0% { opacity: 0; transform: translateX(-50%) translateY(0) scale(0); }
+            50% { opacity: 1; transform: translateX(-50%) translateY(-10px) scale(1); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-20px) scale(0); }
+        }
+
+        .input-area {
+            position: relative;
+        }
+
+        /* Futuristic Input Design */
+        .typing-input {
+            width: 100%;
+            padding: 25px;
+            font-size: 1.3rem;
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(145deg, 
+                rgba(255, 255, 255, 0.12), 
+                rgba(255, 255, 255, 0.08));
+            backdrop-filter: blur(20px);
+            border: 2px solid transparent;
+            border-radius: 25px;
+            color: white;
+            outline: none;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                inset 0 4px 15px rgba(0, 0, 0, 0.2),
+                0 8px 25px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .typing-input::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, 
+                #4ecdc4, #44a08d, #667eea, #764ba2, 
+                #4ecdc4, #44a08d, #667eea, #764ba2);
+            background-size: 400% 400%;
+            border-radius: 25px;
+            z-index: -1;
+            opacity: 0;
+            animation: borderGlow 3s linear infinite;
+            transition: opacity 0.4s ease;
+        }
+
+        @keyframes borderGlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 400% 50%; }
+        }
+
+        .typing-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+            transition: all 0.3s ease;
+            font-style: italic;
+        }
+
+        .typing-input:focus {
+            transform: translateY(-3px) scale(1.02);
+            background: linear-gradient(145deg, 
+                rgba(255, 255, 255, 0.18), 
+                rgba(255, 255, 255, 0.12));
+            box-shadow: 
+                0 0 40px rgba(78, 205, 196, 0.4),
+                inset 0 4px 15px rgba(0, 0, 0, 0.2),
+                0 12px 35px rgba(0, 0, 0, 0.2),
+                0 0 0 1px rgba(78, 205, 196, 0.3);
+        }
+
+        .typing-input:focus::before {
+            opacity: 1;
+        }
+
+        .typing-input:focus::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Real-time typing feedback */
+        .typing-input.correct-typing {
+            box-shadow: 
+                0 0 30px rgba(76, 175, 80, 0.4),
+                inset 0 4px 15px rgba(0, 0, 0, 0.2),
+                0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .typing-input.error-typing {
+            animation: inputErrorPulse 0.3s ease-in-out;
+        }
+
+        @keyframes inputErrorPulse {
+            0%, 100% { transform: translateY(-3px) scale(1.02); }
+            50% { 
+                transform: translateY(-1px) scale(1.01);
+                box-shadow: 
+                    0 0 30px rgba(244, 67, 54, 0.5),
+                    inset 0 4px 15px rgba(0, 0, 0, 0.2),
+                    0 8px 25px rgba(0, 0, 0, 0.15);
+            }
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        /* Next-Gen Button System */
+        .btn {
+            padding: 18px 35px;
+            border: none;
+            border-radius: 35px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(15px);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transform-style: preserve-3d;
+            user-select: none;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.3), 
+                transparent);
+            transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+            transition: all 0.4s ease;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d, #2c7a7b);
+            background-size: 200% 200%;
+            color: white;
+            box-shadow: 
+                0 10px 30px rgba(78, 205, 196, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            animation: primaryPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes primaryPulse {
+            0%, 100% { 
+                background-position: 0% 50%;
+                box-shadow: 0 10px 30px rgba(78, 205, 196, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            }
+            50% { 
+                background-position: 100% 50%;
+                box-shadow: 0 10px 30px rgba(68, 160, 141, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            }
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-5px) scale(1.08) rotateX(15deg);
+            box-shadow: 
+                0 20px 40px rgba(78, 205, 196, 0.5),
+                0 0 50px rgba(78, 205, 196, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.18), 
+                rgba(255, 255, 255, 0.12),
+                rgba(255, 255, 255, 0.08));
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-5px) scale(1.08) rotateX(15deg);
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.25), 
+                rgba(255, 255, 255, 0.18),
+                rgba(255, 255, 255, 0.12));
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 40px rgba(255, 255, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(-2px) scale(1.05) rotateX(10deg);
+            transition: all 0.1s ease;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.1));
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px) scale(1.05);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.15));
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        .progress-section {
+            margin-top: 30px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 15px;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #4ecdc4, #44a08d, #667eea);
+            background-size: 300% 100%;
+            animation: progressFlow 3s linear infinite;
+            width: 0%;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(78, 205, 196, 0.4);
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transform: translateX(-100%);
+            animation: progressShimmer 2.5s infinite;
+        }
+
+        @keyframes progressFlow {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 300% 0%; }
+        }
+
+        @keyframes progressShimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .achievements {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .achievement {
+            background: linear-gradient(135deg, #feca57, #ff9ff3, #54a0ff);
+            background-size: 200% 200%;
+            animation: achievementGlow 3s ease-in-out infinite;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: scale(0) rotate(-10deg);
+            animation: achievementPop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards,
+                       achievementGlow 3s ease-in-out infinite 0.6s;
+            box-shadow: 0 8px 25px rgba(254, 202, 87, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes achievementPop {
+            0% { 
+                opacity: 0; 
+                transform: scale(0) rotate(-10deg); 
+            }
+            50% { 
+                transform: scale(1.3) rotate(5deg); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1) rotate(0deg); 
+            }
+        }
+
+        @keyframes achievementGlow {
+            0%, 100% { 
+                background-position: 0% 50%;
+                box-shadow: 0 8px 25px rgba(254, 202, 87, 0.4);
+            }
+            50% { 
+                background-position: 100% 50%;
+                box-shadow: 0 8px 25px rgba(255, 159, 243, 0.6);
+            }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Enhanced Particle System */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleFloat 8s infinite ease-in-out;
+        }
+
+        .particle:nth-child(odd) {
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, rgba(78, 205, 196, 0.8) 0%, transparent 70%);
+            box-shadow: 0 0 10px rgba(78, 205, 196, 0.6);
+        }
+
+        .particle:nth-child(even) {
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.8) 0%, transparent 70%);
+            box-shadow: 0 0 8px rgba(102, 126, 234, 0.6);
+        }
+
+        .particle:nth-child(3n) {
+            width: 8px;
+            height: 8px;
+            background: radial-gradient(circle, rgba(255, 107, 107, 0.6) 0%, transparent 70%);
+            box-shadow: 0 0 12px rgba(255, 107, 107, 0.4);
+        }
+
+        @keyframes particleFloat {
+            0% { 
+                transform: translateY(100vh) translateX(0px) rotate(0deg) scale(0);
+                opacity: 0;
+            }
+            10% { 
+                opacity: 1;
+                transform: translateY(90vh) translateX(20px) rotate(45deg) scale(1);
+            }
+            50% { 
+                transform: translateY(50vh) translateX(-30px) rotate(180deg) scale(1.2);
+            }
+            90% { 
+                opacity: 1;
+                transform: translateY(10vh) translateX(10px) rotate(315deg) scale(0.8);
+            }
+            100% { 
+                transform: translateY(-10vh) translateX(0px) rotate(360deg) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Advanced Responsive Enhancements */
+        @media (max-width: 1024px) {
+            .stat-card:hover {
+                transform: translateY(-6px) rotateX(5deg) scale(1.03);
+            }
+            
+            .btn:hover {
+                transform: translateY(-3px) scale(1.05);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .title { 
+                font-size: 2.5rem; 
+                margin-bottom: 20px;
+                background-size: 300% 300%;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+                margin-bottom: 30px;
+            }
+            
+            .text-display { 
+                font-size: 1.3rem; 
+                padding: 30px 25px;
+                min-height: 170px;
+                line-height: 2;
+            }
+            
+            .stats-grid { 
+                grid-template-columns: 1fr 1fr; 
+                gap: 18px;
+                margin-bottom: 30px;
+            }
+            
+            .stat-card {
+                padding: 22px 18px;
+                border-radius: 18px;
+            }
+            
+            .stat-value {
+                font-size: 2rem;
+            }
+            
+            .game-area {
+                padding: 30px 25px;
+                border-radius: 22px;
+            }
+            
+            .typing-input {
+                padding: 22px;
+                font-size: 1.2rem;
+                border-radius: 22px;
+            }
+            
+            .level-badge {
+                padding: 12px 20px;
+                font-size: 1rem;
+                border-radius: 30px;
+            }
+            
+            .difficulty-bar {
+                width: 35px;
+                height: 10px;
+            }
+            
+            .btn {
+                padding: 16px 32px;
+                font-size: 1rem;
+                border-radius: 30px;
+            }
+            
+            .progress-bar {
+                height: 16px;
+                border-radius: 10px;
+            }
+            
+            .achievement {
+                padding: 10px 18px;
+                font-size: 0.95rem;
+                border-radius: 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 12px;
+            }
+            
+            .title {
+                font-size: 2rem;
+                margin-bottom: 15px;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+                margin-bottom: 25px;
+            }
+            
+            .text-display {
+                font-size: 1.1rem;
+                padding: 25px 18px;
+                min-height: 150px;
+                line-height: 1.9;
+                border-radius: 18px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .stat-card {
+                padding: 18px 15px;
+                border-radius: 15px;
+            }
+            
+            .stat-value {
+                font-size: 1.8rem;
+            }
+            
+            .game-area {
+                padding: 25px 18px;
+                border-radius: 18px;
+            }
+            
+            .typing-input {
+                padding: 20px;
+                font-size: 1.1rem;
+                border-radius: 18px;
+            }
+            
+            .level-indicator {
+                gap: 12px;
+            }
+            
+            .level-badge {
+                padding: 10px 16px;
+                font-size: 0.9rem;
+                letter-spacing: 1px;
+            }
+            
+            .difficulty-bar {
+                width: 30px;
+                height: 8px;
+            }
+            
+            .btn {
+                padding: 14px 28px;
+                font-size: 0.95rem;
+                letter-spacing: 1px;
+            }
+            
+            .progress-bar {
+                height: 14px;
+            }
+            
+            .achievement {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+                border-radius: 20px;
+            }
+            
+            .modal-content {
+                padding: 30px 20px;
+                border-radius: 25px;
+            }
+        }
+
+        /* Performance Optimization Classes */
+        .gpu-accelerated {
+            will-change: transform;
+            transform: translateZ(0);
+        }
+
+        .reduce-motion {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            backdrop-filter: blur(20px);
+            padding: 50px;
+            border-radius: 30px;
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transform: scale(0.7) rotate(-5deg);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #4ecdc4, #44a08d, #667eea, #764ba2);
+            background-size: 400% 400%;
+            animation: borderRotate 4s linear infinite;
+            border-radius: 30px;
+            z-index: -1;
+        }
+
+        @keyframes borderRotate {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 400% 50%; }
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* Enhanced Font Effects with Better Readability */
+        .font-normal { 
+            font-family: 'JetBrains Mono', monospace; 
+            font-weight: 400;
+        }
+        
+        .font-serif { 
+            font-family: 'Times New Roman', serif; 
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        
+        .font-script { 
+            font-family: 'Fredericka the Great', cursive; 
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+        
+        .font-horror { 
+            font-family: 'Creepster', cursive; 
+            font-weight: 400;
+            letter-spacing: 2px;
+        }
+        
+        .font-metal { 
+            font-family: 'Metal Mania', cursive; 
+            font-weight: 400;
+            letter-spacing: 1.5px;
+        }
+        
+        .font-pirate { 
+            font-family: 'Pirata One', cursive; 
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+        
+        .font-butcher { 
+            font-family: 'Butcherman', cursive; 
+            font-weight: 400;
+            letter-spacing: 2px;
+        }
+        
+        .font-eater { 
+            font-family: 'Eater', cursive; 
+            font-weight: 400;
+            letter-spacing: 3px;
+        }
+
+        /* Progressive Visual Effects */
+        .effect-blur { 
+            filter: blur(0.8px); 
+            transition: filter 0.3s ease;
+        }
+        
+        .effect-shadow { 
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.6), 
+                         0 0 10px rgba(255,255,255,0.1); 
+        }
+        
+        .effect-glow { 
+            text-shadow: 0 0 10px currentColor, 
+                         0 0 20px currentColor, 
+                         0 0 30px currentColor;
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { 
+                text-shadow: 0 0 10px currentColor, 
+                            0 0 20px currentColor, 
+                            0 0 30px currentColor;
+            }
+            50% { 
+                text-shadow: 0 0 15px currentColor, 
+                            0 0 30px currentColor, 
+                            0 0 45px currentColor;
+            }
+        }
+        
+        .effect-distort { 
+            transform: skew(-3deg, 1deg) perspective(300px) rotateX(5deg);
+            transform-origin: center;
+        }
+        
+        .effect-wave { 
+            animation: textWave 3s ease-in-out infinite;
+            transform-origin: center;
+        }
+
+        @keyframes textWave {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg); 
+            }
+            25% { 
+                transform: translateY(-5px) rotate(1deg); 
+            }
+            50% { 
+                transform: translateY(-8px) rotate(0deg); 
+            }
+            75% { 
+                transform: translateY(-3px) rotate(-1deg); 
+            }
+        }
+
+        /* New Advanced Effects */
+        .effect-shake {
+            animation: continuousShake 0.5s ease-in-out infinite;
+        }
+
+        @keyframes continuousShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-1px) translateY(1px); }
+            50% { transform: translateX(1px) translateY(-1px); }
+            75% { transform: translateX(-1px) translateY(-1px); }
+        }
+
+        .effect-rainbow {
+            background: linear-gradient(45deg, 
+                #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, 
+                #ffeaa7, #dda0dd, #98d8c8);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: rainbowShift 3s ease-in-out infinite;
+        }
+
+        @keyframes rainbowShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Enhanced Responsive Design */
+        @media (max-width: 768px) {
+            .title { 
+                font-size: 2.2rem; 
+                margin-bottom: 15px;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+                margin-bottom: 25px;
+            }
+            
+            .text-display { 
+                font-size: 1.2rem; 
+                padding: 25px 20px;
+                min-height: 160px;
+                line-height: 1.8;
+            }
+            
+            .stats-grid { 
+                grid-template-columns: 1fr 1fr; 
+                gap: 15px;
+                margin-bottom: 25px;
+            }
+            
+            .stat-card {
+                padding: 20px 15px;
+            }
+            
+            .stat-value {
+                font-size: 1.8rem;
+            }
+            
+            .game-area {
+                padding: 25px 20px;
+                border-radius: 20px;
+            }
+            
+            .typing-input {
+                padding: 20px;
+                font-size: 1.1rem;
+            }
+            
+            .level-indicator {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .btn {
+                padding: 18px 35px;
+                font-size: 1.1rem;
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .modal-content {
+                padding: 35px 25px;
+                margin: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .title {
+                font-size: 1.8rem;
+            }
+            
+            .text-display {
+                font-size: 1.1rem;
+                padding: 20px 15px;
+                min-height: 140px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .stat-card {
+                padding: 15px;
+            }
+            
+            .stat-value {
+                font-size: 1.6rem;
+            }
+            
+            .game-area {
+                padding: 20px 15px;
+            }
+            
+            .typing-input {
+                padding: 18px;
+                font-size: 1rem;
+            }
+        }
+
+        /* Enhanced Accessibility Features */
+        .focus-ring:focus {
+            outline: 3px solid #4ecdc4;
+            outline-offset: 2px;
+        }
+
+        .high-contrast .char.correct {
+            background: #00ff00;
+            color: #000000;
+        }
+
+        .high-contrast .char.incorrect {
+            background: #ff0000;
+            color: #ffffff;
+        }
+
+        .high-contrast .char.current {
+            background: #ffff00;
+            color: #000000;
+        }
+
+        /* Loading States */
+        .loading {
+            position: relative;
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 30px;
+            height: 30px;
+            margin: -15px 0 0 -15px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid #4ecdc4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Error States */
+        .error-shake {
+            animation: errorBounce 0.6s ease-in-out;
+        }
+
+        @keyframes errorBounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Success States */
+        .success-glow {
+            animation: successPulse 2s ease-in-out;
+            box-shadow: 0 0 30px rgba(76, 175, 80, 0.6);
+        }
+
+        @keyframes successPulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(76, 175, 80, 0.6); }
+            50% { box-shadow: 0 0 50px rgba(76, 175, 80, 0.8); }
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            backdrop-filter: blur(20px);
+            padding: 50px;
+            border-radius: 30px;
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transform: scale(0.7) rotate(-5deg);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.05), transparent);
+            animation: modalShimmer 6s ease-in-out infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes modalShimmer {
+            0%, 100% {
+                transform: rotate(0deg) scale(1);
+            }
+            50% {
+                transform: rotate(2deg) scale(1.05);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="title">TypeChaos Pro</h1>
+            <p class="subtitle">Master typing as fonts evolve from simple to chaotic</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">WPM</div>
+                <div class="stat-value" id="wpm">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Accuracy</div>
+                <div class="stat-value" id="accuracy">100%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Level</div>
+                <div class="stat-value" id="level">1</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Score</div>
+                <div class="stat-value" id="score">0</div>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div class="level-indicator">
+                <div class="level-badge" id="levelBadge">Level 1: Clean Typography</div>
+                <div class="difficulty-meter" id="difficultyMeter">
+                    <div class="difficulty-bar active"></div>
+                    <div class="difficulty-bar"></div>
+                    <div class="difficulty-bar"></div>
+                    <div class="difficulty-bar"></div>
+                    <div class="difficulty-bar"></div>
+                </div>
+            </div>
+
+            <div class="text-display" id="textDisplay">
+                Click "Start Game" to begin your typing challenge!
+            </div>
+
+            <div class="input-area">
+                <input type="text" class="typing-input" id="typingInput" placeholder="Start typing here..." disabled>
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="achievements" id="achievements"></div>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-primary" id="startBtn">Start Game</button>
+                <button class="btn btn-secondary" id="resetBtn">Reset</button>
+                <button class="btn btn-secondary" id="pauseBtn" style="display: none;">Pause</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="gameOverModal">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 20px;">Game Complete!</h2>
+            <div id="finalStats"></div>
+            <button class="btn btn-primary" onclick="closeModal()" style="margin-top: 20px;">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        class TypingGame {
+            constructor() {
+                this.texts = [
+                    "The quick brown fox jumps over the lazy dog. This pangram contains every letter of the alphabet.",
+                    "Programming is the art of telling another human being what one wants the computer to do.",
+                    "In the beginning was the Word, and the Word was with God, and the Word was God.",
+                    "Artificial intelligence is the simulation of human intelligence in machines that are programmed to think and learn.",
+                    "The future belongs to those who believe in the beauty of their dreams and work tirelessly to achieve them.",
+                    "Cryptography is the practice and study of techniques for secure communication in the presence of third parties.",
+                    "Machine learning algorithms build mathematical models based on training data to make predictions or decisions.",
+                    "Quantum computing harnesses quantum mechanical phenomena to process information in fundamentally new ways."
+                ];
+
+                this.levels = [
+                    { name: "Clean Typography", font: "font-normal", effects: [] },
+                    { name: "Serif Classic", font: "font-serif", effects: ["effect-shadow"] },
+                    { name: "Script Challenge", font: "font-script", effects: ["effect-shadow", "effect-glow"] },
+                    { name: "Horror Show", font: "font-horror", effects: ["effect-glow", "effect-shake"] },
+                    { name: "Metal Madness", font: "font-metal", effects: ["effect-blur", "effect-shadow", "effect-rainbow"] },
+                    { name: "Pirate's Curse", font: "font-pirate", effects: ["effect-distort", "effect-glow", "effect-wave"] },
+                    { name: "Butcher's Block", font: "font-butcher", effects: ["effect-blur", "effect-distort", "effect-shake"] },
+                    { name: "Final Chaos", font: "font-eater", effects: ["effect-blur", "effect-distort", "effect-wave", "effect-glow", "effect-rainbow"] }
+                ];
+
+                this.currentLevel = 0;
+                this.currentText = "";
+                this.currentPosition = 0;
+                this.startTime = null;
+                this.errors = 0;
+                this.totalChars = 0;
+                this.isGameActive = false;
+                this.isPaused = false;
+                this.score = 0;
+                this.achievements = new Set();
+
+                this.initializeElements();
+                this.setupEventListeners();
+                this.createParticles();
+                this.loadNewText();
+            }
+
+            initializeElements() {
+                this.textDisplay = document.getElementById('textDisplay');
+                this.typingInput = document.getElementById('typingInput');
+                this.startBtn = document.getElementById('startBtn');
+                this.resetBtn = document.getElementById('resetBtn');
+                this.pauseBtn = document.getElementById('pauseBtn');
+                this.wpmDisplay = document.getElementById('wpm');
+                this.accuracyDisplay = document.getElementById('accuracy');
+                this.levelDisplay = document.getElementById('level');
+                this.scoreDisplay = document.getElementById('score');
+                this.levelBadge = document.getElementById('levelBadge');
+                this.difficultyMeter = document.getElementById('difficultyMeter');
+                this.progressFill = document.getElementById('progressFill');
+                this.achievementsContainer = document.getElementById('achievements');
+                this.gameOverModal = document.getElementById('gameOverModal');
+            }
+
+            setupEventListeners() {
+                this.startBtn.addEventListener('click', () => this.startGame());
+                this.resetBtn.addEventListener('click', () => this.resetGame());
+                this.pauseBtn.addEventListener('click', () => this.togglePause());
+                this.typingInput.addEventListener('input', (e) => this.handleInput(e));
+                this.typingInput.addEventListener('keydown', (e) => this.handleKeyDown(e));
+            }
+
+            createParticles() {
+                const particlesContainer = document.getElementById('particles');
+                for (let i = 0; i < 30; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle gpu-accelerated';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 8 + 's';
+                    particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+                    particlesContainer.appendChild(particle);
+                }
+            }
+
+            loadNewText() {
+                this.currentText = this.texts[this.currentLevel % this.texts.length];
+                this.displayText();
+                this.updateLevelDisplay();
+            }
+
+            displayText() {
+                const level = this.levels[Math.min(this.currentLevel, this.levels.length - 1)];
+                const chars = this.currentText.split('').map((char, index) => {
+                    let className = 'char';
+                    if (index < this.currentPosition) {
+                        className += this.typingInput.value[index] === char ? ' correct' : ' incorrect';
+                    } else if (index === this.currentPosition) {
+                        className += ' current';
+                    }
+                    return `<span class="${className}" data-index="${index}">${char === ' ' ? '&nbsp;' : char}</span>`;
+                }).join('');
+
+                this.textDisplay.innerHTML = chars;
+                this.textDisplay.className = `text-display ${level.font} ${level.effects.join(' ')}`;
+            }
+
+            updateLevelDisplay() {
+                const level = this.levels[Math.min(this.currentLevel, this.levels.length - 1)];
+                this.levelBadge.textContent = `Level ${this.currentLevel + 1}: ${level.name}`;
+                this.levelDisplay.textContent = this.currentLevel + 1;
+
+                // Update difficulty meter
+                const bars = this.difficultyMeter.querySelectorAll('.difficulty-bar');
+                bars.forEach((bar, index) => {
+                    bar.classList.toggle('active', index <= this.currentLevel);
+                });
+            }
+
+            startGame() {
+                this.isGameActive = true;
+                this.isPaused = false;
+                this.startTime = Date.now();
+                this.typingInput.disabled = false;
+                this.typingInput.focus();
+                this.startBtn.style.display = 'none';
+                this.pauseBtn.style.display = 'inline-block';
+                this.currentPosition = 0;
+                this.typingInput.value = '';
+                this.displayText();
+            }
+
+            togglePause() {
+                this.isPaused = !this.isPaused;
+                this.typingInput.disabled = this.isPaused;
+                this.pauseBtn.textContent = this.isPaused ? 'Resume' : 'Pause';
+                if (!this.isPaused) {
+                    this.typingInput.focus();
+                }
+            }
+
+            resetGame() {
+                this.isGameActive = false;
+                this.isPaused = false;
+                this.currentLevel = 0;
+                this.currentPosition = 0;
+                this.errors = 0;
+                this.totalChars = 0;
+                this.score = 0;
+                this.achievements.clear();
+                this.typingInput.value = '';
+                this.typingInput.disabled = true;
+                this.startBtn.style.display = 'inline-block';
+                this.pauseBtn.style.display = 'none';
+                this.pauseBtn.textContent = 'Pause';
+                this.achievementsContainer.innerHTML = '';
+                this.loadNewText();
+                this.updateStats();
+                this.updateProgress();
+            }
+
+            handleInput(e) {
+                if (!this.isGameActive || this.isPaused) return;
+
+                const inputValue = e.target.value;
+                const currentChar = this.currentText[this.currentPosition];
+
+                if (inputValue.length > this.currentPosition + 1) {
+                    e.target.value = inputValue.slice(0, this.currentPosition + 1);
+                    return;
+                }
+
+                if (inputValue[this.currentPosition] === currentChar) {
+                    this.currentPosition++;
+                    this.totalChars++;
+                    this.score += Math.max(1, (this.currentLevel + 1) * 2);
+                } else if (inputValue[this.currentPosition] !== undefined) {
+                    this.errors++;
+                    this.totalChars++;
+                    // Add error feedback
+                    this.typingInput.classList.add('error-shake');
+                    setTimeout(() => {
+                        this.typingInput.classList.remove('error-shake');
+                    }, 600);
+                }
+
+                this.displayText();
+                this.updateStats();
+                this.updateProgress();
+                this.checkAchievements();
+
+                if (this.currentPosition >= this.currentText.length) {
+                    this.levelComplete();
+                }
+            }
+
+            handleKeyDown(e) {
+                if (!this.isGameActive || this.isPaused) return;
+
+                if (e.key === 'Backspace' && this.currentPosition > 0) {
+                    this.currentPosition--;
+                    this.typingInput.value = this.typingInput.value.slice(0, this.currentPosition);
+                    this.displayText();
+                    this.updateProgress();
+                }
+            }
+
+            levelComplete() {
+                this.currentLevel++;
+                this.score += (this.currentLevel * 100);
+                
+                // Add visual feedback for level completion
+                this.textDisplay.classList.add('success-glow');
+                setTimeout(() => {
+                    this.textDisplay.classList.remove('success-glow');
+                }, 2000);
+                
+                if (this.currentLevel >= this.levels.length) {
+                    this.gameComplete();
+                    return;
+                }
+
+                // Add level completion achievement
+                this.addAchievement(`🎯 Level ${this.currentLevel} Complete!`);
+                
+                // Brief pause before next level with loading state
+                this.textDisplay.classList.add('loading');
+                setTimeout(() => {
+                    this.textDisplay.classList.remove('loading');
+                    this.currentPosition = 0;
+                    this.typingInput.value = '';
+                    this.loadNewText();
+                    this.typingInput.focus();
+                }, 1500);
+            }
+
+            gameComplete() {
+                this.isGameActive = false;
+                this.typingInput.disabled = true;
+                this.startBtn.style.display = 'inline-block';
+                this.pauseBtn.style.display = 'none';
+                
+                const finalWPM = this.calculateWPM();
+                const finalAccuracy = this.calculateAccuracy();
+                
+                document.getElementById('finalStats').innerHTML = `
+                    <div style="font-size: 1.2rem; margin-bottom: 15px;">🎉 Congratulations! 🎉</div>
+                    <div style="margin-bottom: 10px;">Final WPM: <strong>${finalWPM}</strong></div>
+                    <div style="margin-bottom: 10px;">Final Accuracy: <strong>${finalAccuracy}%</strong></div>
+                    <div style="margin-bottom: 10px;">Total Score: <strong>${this.score}</strong></div>
+                    <div>Levels Completed: <strong>${this.levels.length}</strong></div>
+                `;
+                
+                this.gameOverModal.classList.add('active');
+                this.addAchievement('🏆 Game Master!');
+            }
+
+            calculateWPM() {
+                if (!this.startTime) return 0;
+                const timeElapsed = (Date.now() - this.startTime) / 1000 / 60;
+                const wordsTyped = (this.currentPosition / 5);
+                return Math.round(wordsTyped / timeElapsed) || 0;
+            }
+
+            calculateAccuracy() {
+                if (this.totalChars === 0) return 100;
+                return Math.round(((this.totalChars - this.errors) / this.totalChars) * 100);
+            }
+
+            updateStats() {
+                this.wpmDisplay.textContent = this.calculateWPM();
+                this.accuracyDisplay.textContent = this.calculateAccuracy() + '%';
+                this.scoreDisplay.textContent = this.score;
+            }
+
+            updateProgress() {
+                const progress = (this.currentPosition / this.currentText.length) * 100;
+                this.progressFill.style.width = progress + '%';
+            }
+
+            checkAchievements() {
+                const wpm = this.calculateWPM();
+                const accuracy = this.calculateAccuracy();
+
+                if (wpm >= 60 && !this.achievements.has('speed60')) {
+                    this.addAchievement('⚡ Speed Demon (60 WPM)');
+                    this.achievements.add('speed60');
+                }
+
+                if (wpm >= 100 && !this.achievements.has('speed100')) {
+                    this.addAchievement('🚀 Lightning Fast (100 WPM)');
+                    this.achievements.add('speed100');
+                }
+
+                if (accuracy === 100 && this.currentPosition > 50 && !this.achievements.has('perfect')) {
+                    this.addAchievement('🎯 Perfectionist');
+                    this.achievements.add('perfect');
+                }
+
+                if (this.currentLevel >= 3 && !this.achievements.has('survivor')) {
+                    this.addAchievement('💀 Chaos Survivor');
+                    this.achievements.add('survivor');
+                }
+            }
+
+            addAchievement(text) {
+                const achievement = document.createElement('div');
+                achievement.className = 'achievement';
+                achievement.textContent = text;
+                this.achievementsContainer.appendChild(achievement);
+
+                setTimeout(() => {
+                    achievement.style.animationDelay = '0s';
+                }, 100);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('gameOverModal').classList.remove('active');
+        }
+
+        // Initialize the game when the page loads
+        window.addEventListener('load', () => {
+            new TypingGame();
+        });
+
+        // Add some keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
