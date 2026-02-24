@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeChaos Pro - Advanced Typing Challenge</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(45deg, #10b981, #059669);
+            --danger-gradient: linear-gradient(45deg, #ef4444, #dc2626);
+            --warning-gradient: linear-gradient(45deg, #f59e0b, #d97706);
+            --info-gradient: linear-gradient(45deg, #6366f1, #4f46e5);
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 15px 35px rgba(0, 0, 0, 0.15);
+            --shadow-strong: 0 20px 40px rgba(0, 0, 0, 0.2);
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --border-radius: 15px;
+            --border-radius-small: 8px;
+            --border-radius-large: 20px;
+            --transition-fast: 0.2s ease;
+            --transition-medium: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 75, 162, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(102, 126, 234, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .game-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-large);
+            padding: 2.5rem;
+            box-shadow: var(--shadow-strong);
+            max-width: 1100px;
+            width: 95%;
+            min-height: 700px;
+            position: relative;
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+            border-radius: var(--border-radius-large) var(--border-radius-large) 0 0;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+            position: relative;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from {
+                filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.3));
+            }
+            to {
+                filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.5));
+            }
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            padding: 1.5rem 1rem;
+            border-radius: var(--border-radius);
+            box-shadow: 
+                var(--shadow-soft),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            text-align: center;
+            transition: all var(--transition-medium);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            transition: all var(--transition-medium);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card:hover .stat-value {
+            transform: scale(1.1);
+            color: #667eea;
+        }
+
+        .difficulty-selector {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .difficulty-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 25px;
+            background: transparent;
+            cursor: pointer;
+            transition: all var(--transition-medium);
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .difficulty-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-gradient);
+            transition: left var(--transition-medium);
+            z-index: -1;
+            border-radius: 25px;
+        }
+
+        .difficulty-btn:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .difficulty-btn:hover::before {
+            left: 0;
+        }
+
+        .difficulty-btn.active {
+            background: var(--primary-gradient);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 
+                var(--shadow-medium),
+                0 0 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .difficulty-btn.active::before {
+            left: 0;
+        }
+
+        .text-display {
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            border-radius: var(--border-radius);
+            padding: 3rem 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 
+                inset 0 4px 15px rgba(0, 0, 0, 0.08),
+                0 5px 20px rgba(0, 0, 0, 0.05);
+            min-height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .text-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--secondary-gradient);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .text-content {
+            font-size: 1.6rem;
+            line-height: 2;
+            text-align: center;
+            transition: all var(--transition-slow);
+            max-width: 100%;
+            color: var(--text-primary);
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        .char {
+            position: relative;
+            transition: all var(--transition-fast);
+            border-radius: 4px;
+            padding: 2px 1px;
+            margin: 0 1px;
+        }
+
+        .char.correct {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1));
+            color: #059669;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+            animation: correctPulse 0.3s ease;
+        }
+
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .char.incorrect {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(239, 68, 68, 0.15));
+            color: #dc2626;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+            animation: incorrectShake 0.4s ease;
+        }
+
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
+        }
+
+        .char.current {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.2));
+            box-shadow: 
+                0 0 15px rgba(59, 130, 246, 0.5),
+                inset 0 0 10px rgba(59, 130, 246, 0.2);
+            animation: currentPulse 1.2s infinite;
+            border: 2px solid rgba(59, 130, 246, 0.6);
+        }
+
+        @keyframes currentPulse {
+            0%, 100% { 
+                opacity: 1; 
+                transform: scale(1);
+                box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+            }
+            50% { 
+                opacity: 0.7; 
+                transform: scale(1.05);
+                box-shadow: 0 0 25px rgba(59, 130, 246, 0.8);
+            }
+        }
+
+        .input-area {
+            position: relative;
+            margin-bottom: 2.5rem;
+        }
+
+        .typing-input {
+            width: 100%;
+            padding: 1.5rem 2rem;
+            border: 2px solid rgba(229, 231, 235, 0.5);
+            border-radius: var(--border-radius);
+            font-size: 1.2rem;
+            transition: all var(--transition-medium);
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            color: var(--text-primary);
+            font-weight: 500;
+            box-shadow: 
+                var(--shadow-soft),
+                inset 0 2px 8px rgba(0, 0, 0, 0.03);
+            font-family: 'Segoe UI', monospace;
+        }
+
+        .typing-input::placeholder {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .typing-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 
+                0 0 0 4px rgba(102, 126, 234, 0.15),
+                var(--shadow-medium),
+                inset 0 2px 8px rgba(0, 0, 0, 0.03);
+            transform: translateY(-2px);
+            background: #ffffff;
+        }
+
+        .typing-input:disabled {
+            background: #f3f4f6;
+            color: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition-medium);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            min-width: 160px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transition: all 0.6s ease;
+            transform: translate(-50%, -50%);
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn:active {
+            transform: translateY(1px) scale(0.98);
+        }
+
+        .btn-primary {
+            background: var(--secondary-gradient);
+            color: white;
+            border: 2px solid transparent;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 15px 35px rgba(16, 185, 129, 0.4),
+                0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary {
+            background: var(--info-gradient);
+            color: white;
+            border: 2px solid transparent;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 15px 35px rgba(99, 102, 241, 0.4),
+                0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-danger {
+            background: var(--danger-gradient);
+            color: white;
+            border: 2px solid transparent;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 15px 35px rgba(239, 68, 68, 0.4),
+                0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: var(--shadow-soft) !important;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(145deg, #e5e7eb, #d1d5db);
+            border-radius: 50px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--secondary-gradient);
+            border-radius: 50px;
+            transition: width var(--transition-medium);
+            width: 0%;
+            position: relative;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: progressShine 2s infinite;
+        }
+
+        @keyframes progressShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .achievement-popup {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: var(--warning-gradient);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: 
+                var(--shadow-strong),
+                0 0 30px rgba(245, 158, 11, 0.4);
+            transform: translateX(400px);
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            max-width: 300px;
+        }
+
+        .achievement-popup.show {
+            transform: translateX(0);
+            animation: achievementBounce 0.6s ease;
+        }
+
+        @keyframes achievementBounce {
+            0% { transform: translateX(400px) scale(0.8); }
+            60% { transform: translateX(-10px) scale(1.05); }
+            100% { transform: translateX(0) scale(1); }
+        }
+
+        .achievement-popup::before {
+            content: '🏆';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            font-size: 2rem;
+            background: #fff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .level-indicator {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9));
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level-indicator::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--info-gradient);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .level-badge {
+            display: inline-block;
+            background: var(--info-gradient);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 
+                var(--shadow-medium),
+                0 0 20px rgba(99, 102, 241, 0.3);
+            transition: all var(--transition-medium);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .level-badge:hover::before {
+            left: 100%;
+        }
+
+        .font-preview {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+
+        /* Enhanced Wacky Font Styles with better visual effects */
+        .font-level-1 { 
+            font-family: 'Times New Roman', serif; 
+            transition: all var(--transition-slow);
+        }
+        .font-level-2 { 
+            font-family: 'Courier New', monospace; 
+            letter-spacing: 2px; 
+            transition: all var(--transition-slow);
+        }
+        .font-level-3 { 
+            font-family: 'Comic Sans MS', cursive; 
+            font-weight: bold; 
+            color: #7c3aed;
+            transition: all var(--transition-slow);
+        }
+        .font-level-4 { 
+            font-family: 'Impact', sans-serif; 
+            letter-spacing: 3px; 
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+            transform: scaleY(1.2);
+            transition: all var(--transition-slow);
+        }
+        .font-level-5 { 
+            font-family: 'Brush Script MT', cursive; 
+            font-size: 1.9rem;
+            transform: rotate(-3deg) scale(1.1);
+            color: #059669;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+            transition: all var(--transition-slow);
+        }
+        .font-level-6 { 
+            font-family: 'Chiller', 'Creepster', fantasy; 
+            letter-spacing: 4px;
+            text-shadow: 
+                3px 3px 6px rgba(0,0,0,0.5),
+                0 0 10px rgba(239, 68, 68, 0.5);
+            color: #dc2626;
+            font-size: 1.8rem;
+            transition: all var(--transition-slow);
+        }
+        .font-level-7 { 
+            font-family: 'Wingdings', 'Webdings', symbol; 
+            font-size: 2.2rem;
+            animation: wobble 2s infinite ease-in-out;
+            filter: hue-rotate(45deg);
+            text-shadow: 0 0 15px rgba(102, 126, 234, 0.6);
+        }
+        .font-level-8 { 
+            font-family: 'Webdings', 'Wingdings', symbol;
+            transform: rotate(180deg) scale(1.3);
+            animation: spin 8s linear infinite;
+            filter: contrast(150%) saturate(150%);
+            text-shadow: 0 0 20px rgba(245, 158, 11, 0.8);
+        }
+        .font-level-9 { 
+            font-family: 'Symbol', 'Wingdings', symbol;
+            filter: blur(1px) contrast(200%) hue-rotate(90deg);
+            animation: shake 0.5s infinite, colorShift 3s infinite;
+            font-size: 2rem;
+            text-shadow: 
+                0 0 10px rgba(239, 68, 68, 0.8),
+                0 0 20px rgba(59, 130, 246, 0.6);
+        }
+        .font-level-10 { 
+            font-family: 'Zapf Dingbats', 'Symbol', 'Wingdings', symbol;
+            transform: scale(1.6) skew(-15deg, 5deg);
+            filter: blur(2px) contrast(300%) saturate(200%) hue-rotate(180deg);
+            animation: chaos 1s infinite, rainbow 2s infinite, megaShake 0.3s infinite;
+            font-size: 2.5rem;
+            text-shadow: 
+                0 0 15px rgba(239, 68, 68, 1),
+                0 0 25px rgba(59, 130, 246, 0.8),
+                0 0 35px rgba(16, 185, 129, 0.6),
+                5px 5px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        @keyframes wobble {
+            0%, 100% { transform: rotate(-3deg) translateY(0); }
+            25% { transform: rotate(2deg) translateY(-2px); }
+            50% { transform: rotate(-1deg) translateY(1px); }
+            75% { transform: rotate(3deg) translateY(-1px); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(180deg) scale(1.3); }
+            to { transform: rotate(540deg) scale(1.3); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            10% { transform: translateX(-2px) translateY(1px); }
+            20% { transform: translateX(2px) translateY(-1px); }
+            30% { transform: translateX(-1px) translateY(2px); }
+            40% { transform: translateX(1px) translateY(-2px); }
+            50% { transform: translateX(-2px) translateY(0px); }
+            60% { transform: translateX(2px) translateY(1px); }
+            70% { transform: translateX(-1px) translateY(-1px); }
+            80% { transform: translateX(1px) translateY(2px); }
+            90% { transform: translateX(-1px) translateY(-2px); }
+        }
+
+        @keyframes colorShift {
+            0% { filter: blur(1px) contrast(200%) hue-rotate(0deg); }
+            33% { filter: blur(1.5px) contrast(250%) hue-rotate(120deg); }
+            66% { filter: blur(1px) contrast(200%) hue-rotate(240deg); }
+            100% { filter: blur(1px) contrast(200%) hue-rotate(360deg); }
+        }
+
+        @keyframes chaos {
+            0% { transform: scale(1.6) skew(-15deg, 5deg) rotate(0deg); }
+            10% { transform: scale(1.4) skew(10deg, -3deg) rotate(5deg); }
+            20% { transform: scale(1.8) skew(-8deg, 8deg) rotate(-3deg); }
+            30% { transform: scale(1.5) skew(12deg, -5deg) rotate(8deg); }
+            40% { transform: scale(1.7) skew(-10deg, 10deg) rotate(-5deg); }
+            50% { transform: scale(1.3) skew(15deg, -8deg) rotate(10deg); }
+            60% { transform: scale(1.9) skew(-12deg, 6deg) rotate(-8deg); }
+            70% { transform: scale(1.4) skew(8deg, -10deg) rotate(12deg); }
+            80% { transform: scale(1.6) skew(-18deg, 4deg) rotate(-10deg); }
+            90% { transform: scale(1.7) skew(5deg, -12deg) rotate(15deg); }
+            100% { transform: scale(1.6) skew(-15deg, 5deg) rotate(0deg); }
+        }
+
+        @keyframes rainbow {
+            0% { text-shadow: 0 0 15px rgba(239, 68, 68, 1), 0 0 25px rgba(59, 130, 246, 0.8); }
+            16% { text-shadow: 0 0 15px rgba(245, 158, 11, 1), 0 0 25px rgba(239, 68, 68, 0.8); }
+            32% { text-shadow: 0 0 15px rgba(34, 197, 94, 1), 0 0 25px rgba(245, 158, 11, 0.8); }
+            48% { text-shadow: 0 0 15px rgba(59, 130, 246, 1), 0 0 25px rgba(34, 197, 94, 0.8); }
+            64% { text-shadow: 0 0 15px rgba(139, 92, 246, 1), 0 0 25px rgba(59, 130, 246, 0.8); }
+            80% { text-shadow: 0 0 15px rgba(236, 72, 153, 1), 0 0 25px rgba(139, 92, 246, 0.8); }
+            100% { text-shadow: 0 0 15px rgba(239, 68, 68, 1), 0 0 25px rgba(59, 130, 246, 0.8); }
+        }
+
+        @keyframes megaShake {
+            0%, 100% { transform: scale(1.6) skew(-15deg, 5deg) translateX(0) translateY(0); }
+            25% { transform: scale(1.6) skew(-15deg, 5deg) translateX(-3px) translateY(2px); }
+            50% { transform: scale(1.6) skew(-15deg, 5deg) translateX(3px) translateY(-2px); }
+            75% { transform: scale(1.6) skew(-15deg, 5deg) translateX(-2px) translateY(-1px); }
+        }
+
+        .game-over {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: var(--secondary-gradient);
+            color: white;
+            border-radius: var(--border-radius);
+            margin-top: 2rem;
+            box-shadow: var(--shadow-strong);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            animation: gameOverSlide 0.8s ease-out;
+        }
+
+        @keyframes gameOverSlide {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .game-over::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: celebrationSweep 3s infinite;
+        }
+
+        @keyframes celebrationSweep {
+            0% { transform: rotate(-45deg) translateX(-100%); }
+            100% { transform: rotate(-45deg) translateX(100%); }
+        }
+
+        .final-score {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            text-shadow: 
+                0 0 20px rgba(255, 255, 255, 0.5),
+                0 4px 8px rgba(0, 0, 0, 0.3);
+            animation: scoreGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes scoreGlow {
+            from {
+                text-shadow: 
+                    0 0 20px rgba(255, 255, 255, 0.5),
+                    0 4px 8px rgba(0, 0, 0, 0.3);
+            }
+            to {
+                text-shadow: 
+                    0 0 30px rgba(255, 255, 255, 0.8),
+                    0 0 40px rgba(16, 185, 129, 0.6),
+                    0 4px 8px rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        .leaderboard {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-top: 2rem;
+            color: var(--text-primary);
+            box-shadow: var(--shadow-medium);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .leaderboard h3 {
+            margin-bottom: 1.5rem;
+            color: #667eea;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            position: relative;
+        }
+
+        .leaderboard h3::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--primary-gradient);
+            border-radius: 2px;
+        }
+
+        .leaderboard-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+            transition: all var(--transition-medium);
+            border-radius: var(--border-radius-small);
+            margin-bottom: 0.5rem;
+        }
+
+        .leaderboard-entry:hover {
+            background: rgba(102, 126, 234, 0.05);
+            transform: translateX(5px);
+            border-color: rgba(102, 126, 234, 0.2);
+        }
+
+        .leaderboard-entry:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .leaderboard-entry span:first-child {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .leaderboard-entry span:last-child {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        /* Enhanced Responsive Design */
+        @media (max-width: 1024px) {
+            .game-container {
+                padding: 2rem;
+                margin: 1rem;
+                max-width: 95%;
+            }
+            
+            .stats-bar {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 1rem;
+            }
+            
+            .text-content {
+                font-size: 1.4rem;
+                line-height: 1.8;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 1.5rem;
+                margin: 0.5rem;
+                min-height: auto;
+            }
+            
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            
+            .stat-card {
+                padding: 1rem 0.8rem;
+            }
+            
+            .stat-value {
+                font-size: 1.6rem;
+            }
+            
+            .difficulty-selector {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+                width: 100%;
+            }
+            
+            .difficulty-btn {
+                width: 100%;
+                padding: 1rem;
+            }
+            
+            .text-content {
+                font-size: 1.3rem;
+                line-height: 1.7;
+            }
+            
+            .text-display {
+                padding: 2rem 1.5rem;
+                min-height: 180px;
+            }
+            
+            .typing-input {
+                padding: 1rem 1.5rem;
+                font-size: 1.1rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                padding: 1rem 2rem;
+            }
+            
+            .final-score {
+                font-size: 3rem;
+            }
+            
+            .achievement-popup {
+                top: 20px;
+                right: 20px;
+                left: 20px;
+                transform: translateY(-200px);
+                max-width: none;
+            }
+            
+            .achievement-popup.show {
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-container {
+                padding: 1rem;
+                border-radius: var(--border-radius);
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+            
+            .stats-bar {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+            
+            .stat-card {
+                padding: 0.8rem;
+            }
+            
+            .stat-value {
+                font-size: 1.4rem;
+            }
+            
+            .text-content {
+                font-size: 1.1rem;
+                line-height: 1.6;
+            }
+            
+            .text-display {
+                padding: 1.5rem 1rem;
+                min-height: 150px;
+            }
+            
+            .typing-input {
+                padding: 0.8rem 1rem;
+                font-size: 1rem;
+            }
+            
+            .btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+                min-width: auto;
+            }
+            
+            .level-badge {
+                padding: 0.6rem 1.5rem;
+                font-size: 1rem;
+            }
+            
+            .final-score {
+                font-size: 2.5rem;
+            }
+            
+            .leaderboard {
+                padding: 1.5rem;
+            }
+            
+            .leaderboard-entry {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+                padding: 0.8rem;
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --glass-bg: rgba(17, 24, 39, 0.95);
+                --text-primary: #f9fafb;
+                --text-secondary: #d1d5db;
+                --text-muted: #9ca3af;
+            }
+            
+            .stat-card,
+            .text-display,
+            .typing-input,
+            .level-indicator {
+                background: linear-gradient(145deg, rgba(31, 41, 55, 0.9), rgba(17, 24, 39, 0.9));
+                color: var(--text-primary);
+            }
+            
+            .typing-input::placeholder {
+                color: var(--text-muted);
+            }
+            
+            .leaderboard {
+                background: rgba(31, 41, 55, 0.95);
+                color: var(--text-primary);
+            }
+        }
+
+        /* High contrast mode */
+        @media (prefers-contrast: high) {
+            .char.correct {
+                background: #00ff00;
+                color: #000000;
+            }
+            
+            .char.incorrect {
+                background: #ff0000;
+                color: #ffffff;
+            }
+            
+            .char.current {
+                background: #0000ff;
+                color: #ffffff;
+                border: 3px solid #ffffff;
+            }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            
+            .font-level-7,
+            .font-level-8,
+            .font-level-9,
+            .font-level-10 {
+                animation: none !important;
+            }
+        }
+
+        /* Focus styles for accessibility */
+        .btn:focus,
+        .difficulty-btn:focus,
+        .typing-input:focus {
+            outline: 3px solid rgba(102, 126, 234, 0.5);
+            outline-offset: 2px;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .game-container {
+                box-shadow: none;
+                border: 2px solid #000;
+            }
+            
+            .achievement-popup,
+            .btn,
+            .controls {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1 class="title">TypeChaos Pro</h1>
+            <p class="subtitle">Master typing through progressively chaotic fonts</p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-label">WPM</div>
+                <div class="stat-value" id="wpm">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Accuracy</div>
+                <div class="stat-value" id="accuracy">100%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Level</div>
+                <div class="stat-value" id="level">1</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Score</div>
+                <div class="stat-value" id="score">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Time</div>
+                <div class="stat-value" id="timer">60s</div>
+            </div>
+        </div>
+
+        <div class="difficulty-selector">
+            <button class="difficulty-btn active" data-mode="practice">Practice</button>
+            <button class="difficulty-btn" data-mode="challenge">Challenge</button>
+            <button class="difficulty-btn" data-mode="nightmare">Nightmare</button>
+        </div>
+
+        <div class="level-indicator">
+            <div class="level-badge" id="level-badge">Level 1: Times New Roman</div>
+            <div class="font-preview" id="font-preview">Clean and readable serif font</div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
+        </div>
+
+        <div class="text-display">
+            <div class="text-content" id="text-display"></div>
+        </div>
+
+        <div class="input-area">
+            <input type="text" class="typing-input" id="typing-input" placeholder="Start typing here..." autocomplete="off" spellcheck="false">
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" id="start-btn">Start Game</button>
+            <button class="btn btn-secondary" id="new-text-btn">New Text</button>
+            <button class="btn btn-danger" id="reset-btn">Reset Stats</button>
+        </div>
+
+        <div id="game-over" class="game-over" style="display: none;">
+            <h2>Game Complete!</h2>
+            <div class="final-score" id="final-score">0</div>
+            <p>Congratulations on completing the typing challenge!</p>
+            <div class="leaderboard">
+                <h3>Your Best Scores</h3>
+                <div id="leaderboard-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="achievement-popup" id="achievement-popup">
+        <strong>Achievement Unlocked!</strong>
+        <div id="achievement-text"></div>
+    </div>
+
+    <script>
+        class TypingGame {
+            constructor() {
+                this.currentLevel = 1;
+                this.currentMode = 'practice';
+                this.gameActive = false;
+                this.startTime = null;
+                this.currentText = '';
+                this.userInput = '';
+                this.currentPosition = 0;
+                this.correctChars = 0;
+                this.totalChars = 0;
+                this.timeLimit = 60;
+                this.timeRemaining = 60;
+                this.score = 0;
+                this.timer = null;
+                
+                this.texts = {
+                    practice: [
+                        "The quick brown fox jumps over the lazy dog.",
+                        "Pack my box with five dozen liquor jugs.",
+                        "How vexingly quick daft zebras jump!",
+                        "Sphinx of black quartz, judge my vow.",
+                        "The five boxing wizards jump quickly."
+                    ],
+                    challenge: [
+                        "Amazingly few discotheques provide jukeboxes with very hard rock music.",
+                        "Jackdaws love my big sphinx of quartz with enthusiasm and dedication.",
+                        "The job requires extra pluck and zeal from every young wage earner working.",
+                        "My grandfather picks up quartz and valuable onyx in a woven jute bag."
+                    ],
+                    nightmare: [
+                        "Jived fox nymph grabs quick waltz. Sphinx of black quartz judge my vow!",
+                        "Cwm fjord bank glyphs vext quiz. Waltz, bad nymph, for quick jigs vex.",
+                        "Brick quiz whangs jumpy veldt fox. Bright vixens jump; dozy fowl quack."
+                    ]
+                };
+                
+                this.fontLevels = [
+                    { name: "Times New Roman", description: "Clean and readable serif font", class: "font-level-1" },
+                    { name: "Courier New", description: "Monospace typewriter style", class: "font-level-2" },
+                    { name: "Comic Sans MS", description: "Playful handwritten style", class: "font-level-3" },
+                    { name: "Impact", description: "Bold condensed sans-serif", class: "font-level-4" },
+                    { name: "Brush Script", description: "Handwritten brush strokes", class: "font-level-5" },
+                    { name: "Chiller", description: "Spooky decorative font", class: "font-level-6" },
+                    { name: "Wingdings", description: "Symbol font challenge", class: "font-level-7" },
+                    { name: "Webdings", description: "Upside-down symbols", class: "font-level-8" },
+                    { name: "Symbol Font", description: "Blurred mathematical symbols", class: "font-level-9" },
+                    { name: "Chaos Mode", description: "Ultimate font nightmare", class: "font-level-10" }
+                ];
+                
+                this.achievements = [
+                    { name: "First Steps", condition: (stats) => stats.level >= 2, message: "Completed Level 1!" },
+                    { name: "Speed Demon", condition: (stats) => stats.wpm >= 60, message: "60+ WPM achieved!" },
+                    { name: "Perfectionist", condition: (stats) => stats.accuracy >= 98, message: "98%+ accuracy!" },
+                    { name: "Font Master", condition: (stats) => stats.level >= 5, message: "Mastered 5 font levels!" },
+                    { name: "Chaos Survivor", condition: (stats) => stats.level >= 10, message: "Survived Chaos Mode!" }
+                ];
+                
+                this.unlockedAchievements = new Set();
+                this.leaderboard = JSON.parse(localStorage.getItem('typingGameLeaderboard')) || [];
+                
+                this.initializeElements();
+                this.bindEvents();
+                this.loadNewText();
+                this.updateDisplay();
+            }
+            
+            initializeElements() {
+                this.elements = {
+                    textDisplay: document.getElementById('text-display'),
+                    typingInput: document.getElementById('typing-input'),
+                    startBtn: document.getElementById('start-btn'),
+                    newTextBtn: document.getElementById('new-text-btn'),
+                    resetBtn: document.getElementById('reset-btn'),
+                    wpm: document.getElementById('wpm'),
+                    accuracy: document.getElementById('accuracy'),
+                    level: document.getElementById('level'),
+                    score: document.getElementById('score'),
+                    timer: document.getElementById('timer'),
+                    progress: document.getElementById('progress'),
+                    levelBadge: document.getElementById('level-badge'),
+                    fontPreview: document.getElementById('font-preview'),
+                    gameOver: document.getElementById('game-over'),
+                    finalScore: document.getElementById('final-score'),
+                    achievementPopup: document.getElementById('achievement-popup'),
+                    achievementText: document.getElementById('achievement-text'),
+                    leaderboardList: document.getElementById('leaderboard-list')
+                };
+            }
+            
+            bindEvents() {
+                this.elements.startBtn.addEventListener('click', () => this.startGame());
+                this.elements.newTextBtn.addEventListener('click', () => this.loadNewText());
+                this.elements.resetBtn.addEventListener('click', () => this.resetStats());
+                this.elements.typingInput.addEventListener('input', (e) => this.handleInput(e));
+                this.elements.typingInput.addEventListener('keydown', (e) => this.handleKeyDown(e));
+                
+                document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => this.changeDifficulty(e.target.dataset.mode));
+                });
+            }
+            
+            startGame() {
+                if (this.gameActive) {
+                    this.endGame();
+                    return;
+                }
+                
+                this.gameActive = true;
+                this.startTime = Date.now();
+                this.timeRemaining = this.timeLimit;
+                this.elements.startBtn.textContent = 'End Game';
+                this.elements.typingInput.focus();
+                this.elements.typingInput.disabled = false;
+                
+                this.timer = setInterval(() => {
+                    this.timeRemaining--;
+                    this.elements.timer.textContent = `${this.timeRemaining}s`;
+                    
+                    if (this.timeRemaining <= 0) {
+                        this.endGame();
+                    }
+                }, 1000);
+            }
+            
+            endGame() {
+                this.gameActive = false;
+                clearInterval(this.timer);
+                this.elements.startBtn.textContent = 'Start Game';
+                this.elements.typingInput.disabled = true;
+                
+                const finalStats = this.calculateStats();
+                this.saveScore(finalStats);
+                this.showGameOver(finalStats);
+            }
+            
+            handleInput(e) {
+                if (!this.gameActive) return;
+                
+                this.userInput = e.target.value;
+                this.currentPosition = this.userInput.length;
+                this.updateTextDisplay();
+                this.updateStats();
+                this.checkLevelProgression();
+                
+                if (this.userInput === this.currentText) {
+                    this.levelUp();
+                }
+            }
+            
+            handleKeyDown(e) {
+                if (!this.gameActive) return;
+                
+                // Handle special keys
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    this.loadNewText();
+                }
+            }
+            
+            updateTextDisplay() {
+                const textEl = this.elements.textDisplay;
+                let html = '';
+                
+                for (let i = 0; i < this.currentText.length; i++) {
+                    const char = this.currentText[i];
+                    let className = 'char';
+                    
+                    if (i < this.userInput.length) {
+                        className += this.userInput[i] === char ? ' correct' : ' incorrect';
+                    } else if (i === this.userInput.length) {
+                        className += ' current';
+                    }
+                    
+                    html += `<span class="${className}">${char === ' ' ? '&nbsp;' : char}</span>`;
+                }
+                
+                textEl.innerHTML = html;
+                
+                // Apply current font level
+                const fontLevel = this.fontLevels[this.currentLevel - 1];
+                textEl.className = `text-content ${fontLevel.class}`;
+            }
+            
+            updateStats() {
+                const stats = this.calculateStats();
+                
+                this.elements.wpm.textContent = Math.round(stats.wpm);
+                this.elements.accuracy.textContent = `${Math.round(stats.accuracy)}%`;
+                this.elements.level.textContent = this.currentLevel;
+                this.elements.score.textContent = Math.round(stats.score);
+                
+                const progress = (this.userInput.length / this.currentText.length) * 100;
+                this.elements.progress.style.width = `${progress}%`;
+                
+                this.checkAchievements(stats);
+            }
+            
+            calculateStats() {
+                const timeElapsed = this.gameActive ? (Date.now() - this.startTime) / 1000 / 60 : 0;
+                const correctChars = this.countCorrectChars();
+                const totalChars = this.userInput.length;
+                
+                const wpm = timeElapsed > 0 ? (correctChars / 5) / timeElapsed : 0;
+                const accuracy = totalChars > 0 ? (correctChars / totalChars) * 100 : 100;
+                
+                // Advanced scoring system
+                const baseScore = correctChars * 10;
+                const speedBonus = wpm * 5;
+                const accuracyBonus = (accuracy / 100) * 100;
+                const levelBonus = this.currentLevel * 50;
+                const score = baseScore + speedBonus + accuracyBonus + levelBonus;
+                
+                return {
+                    wpm,
+                    accuracy,
+                    score,
+                    level: this.currentLevel,
+                    correctChars,
+                    totalChars,
+                    timeElapsed
+                };
+            }
+            
+            countCorrectChars() {
+                let correct = 0;
+                for (let i = 0; i < Math.min(this.userInput.length, this.currentText.length); i++) {
+                    if (this.userInput[i] === this.currentText[i]) {
+                        correct++;
+                    }
+                }
+                return correct;
+            }
+            
+            checkLevelProgression() {
+                const progress = this.userInput.length / this.currentText.length;
+                
+                // Level up conditions based on difficulty
+                const levelUpThreshold = {
+                    practice: 0.8,
+                    challenge: 0.9,
+                    nightmare: 0.95
+                }[this.currentMode];
+                
+                const accuracy = this.calculateStats().accuracy;
+                const minAccuracy = {
+                    practice: 80,
+                    challenge: 85,
+                    nightmare: 90
+                }[this.currentMode];
+                
+                if (progress >= levelUpThreshold && accuracy >= minAccuracy) {
+                    this.levelUp();
+                }
+            }
+            
+            levelUp() {
+                if (this.currentLevel < this.fontLevels.length) {
+                    this.currentLevel++;
+                    this.loadNewText();
+                    this.showAchievement(`Level ${this.currentLevel} Unlocked!`, `Now using: ${this.fontLevels[this.currentLevel - 1].name}`);
+                    this.updateLevelDisplay();
+                } else {
+                    this.endGame();
+                }
+            }
+            
+            updateLevelDisplay() {
+                const fontLevel = this.fontLevels[this.currentLevel - 1];
+                this.elements.levelBadge.textContent = `Level ${this.currentLevel}: ${fontLevel.name}`;
+                this.elements.fontPreview.textContent = fontLevel.description;
+            }
+            
+            loadNewText() {
+                const textArray = this.texts[this.currentMode];
+                this.currentText = textArray[Math.floor(Math.random() * textArray.length)];
+                this.userInput = '';
+                this.currentPosition = 0;
+                this.elements.typingInput.value = '';
+                this.updateTextDisplay();
+                this.updateStats();
+            }
+            
+            changeDifficulty(mode) {
+                this.currentMode = mode;
+                this.timeLimit = {
+                    practice: 60,
+                    challenge: 45,
+                    nightmare: 30
+                }[mode];
+                this.timeRemaining = this.timeLimit;
+                this.elements.timer.textContent = `${this.timeLimit}s`;
+                
+                document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
+                
+                this.loadNewText();
+            }
+            
+            checkAchievements(stats) {
+                this.achievements.forEach(achievement => {
+                    if (!this.unlockedAchievements.has(achievement.name) && achievement.condition(stats)) {
+                        this.unlockedAchievements.add(achievement.name);
+                        this.showAchievement(achievement.name, achievement.message);
+                    }
+                });
+            }
+            
+            showAchievement(title, message) {
+                this.elements.achievementText.innerHTML = `<strong>${title}</strong><br>${message}`;
+                this.elements.achievementPopup.classList.add('show');
+                
+                setTimeout(() => {
+                    this.elements.achievementPopup.classList.remove('show');
+                }, 3000);
+            }
+            
+            saveScore(stats) {
+                const scoreEntry = {
+                    score: Math.round(stats.score),
+                    wpm: Math.round(stats.wpm),
+                    accuracy: Math.round(stats.accuracy),
+                    level: stats.level,
+                    mode: this.currentMode,
+                    date: new Date().toLocaleDateString()
+                };
+                
+                this.leaderboard.push(scoreEntry);
+                this.leaderboard.sort((a, b) => b.score - a.score);
+                this.leaderboard = this.leaderboard.slice(0, 10); // Keep top 10
+                
+                try {
+                    localStorage.setItem('typingGameLeaderboard', JSON.stringify(this.leaderboard));
+                } catch (e) {
+                    console.warn('Could not save to localStorage:', e);
+                }
+            }
+            
+            showGameOver(stats) {
+                this.elements.finalScore.textContent = Math.round(stats.score);
+                this.updateLeaderboard();
+                this.elements.gameOver.style.display = 'block';
+                this.elements.gameOver.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            updateLeaderboard() {
+                const leaderboardHtml = this.leaderboard.map((entry, index) => `
+                    <div class="leaderboard-entry">
+                        <span>#${index + 1} - ${entry.mode.toUpperCase()}</span>
+                        <span>${entry.score} pts (${entry.wpm} WPM, ${entry.accuracy}%)</span>
+                    </div>
+                `).join('');
+                
+                this.elements.leaderboardList.innerHTML = leaderboardHtml || '<div class="leaderboard-entry"><span>No scores yet</span><span>Play to set records!</span></div>';
+            }
+            
+            resetStats() {
+                if (confirm('Are you sure you want to reset all statistics and leaderboard?')) {
+                    this.currentLevel = 1;
+                    this.score = 0;
+                    this.unlockedAchievements.clear();
+                    this.leaderboard = [];
+                    this.userInput = '';
+                    this.currentPosition = 0;
+                    
+                    try {
+                        localStorage.removeItem('typingGameLeaderboard');
+                    } catch (e) {
+                        console.warn('Could not clear localStorage:', e);
+                    }
+                    
+                    this.elements.gameOver.style.display = 'none';
+                    this.updateDisplay();
+                    this.updateLevelDisplay();
+                    this.loadNewText();
+                    
+                    this.showAchievement('Fresh Start', 'All statistics have been reset!');
+                }
+            }
+            
+            updateDisplay() {
+                this.elements.wpm.textContent = '0';
+                this.elements.accuracy.textContent = '100%';
+                this.elements.level.textContent = this.currentLevel;
+                this.elements.score.textContent = '0';
+                this.elements.timer.textContent = `${this.timeLimit}s`;
+                this.elements.progress.style.width = '0%';
+                this.updateLeaderboard();
+            }
+        }
+        
+        // Enhanced text collections with progressive difficulty
+        const advancedTexts = {
+            practice: [
+                "The quick brown fox jumps over the lazy dog.",
+                "Pack my box with five dozen liquor jugs.",
+                "How vexingly quick daft zebras jump around!",
+                "Sphinx of black quartz, judge my vow today.",
+                "The five boxing wizards jump quite quickly.",
+                "Amazingly few discotheques provide jukeboxes.",
+                "Jackdaws love my big sphinx of quartz dearly.",
+                "The job requires extra pluck and zeal from workers."
+            ],
+            challenge: [
+                "Amazingly few discotheques provide jukeboxes with very hard rock music for dancing guests.",
+                "Jackdaws love my big sphinx of quartz with tremendous enthusiasm and unwavering dedication.",
+                "The job requires extra pluck and zeal from every young wage earner working diligently.",
+                "My grandfather picks up quartz and valuable onyx jewels in his favorite woven jute bag daily.",
+                "Cwm fjord bank glyphs vext quiz: waltz, bad nymph, for quick jigs vex puzzled judges.",
+                "Brick quiz whangs jumpy veldt fox: bright vixens jump quickly while dozy fowl quack loudly."
+            ],
+            nightmare: [
+                "Jived fox nymph grabs quick waltz. Sphinx of black quartz judge my vow! Cwm fjord vext.",
+                "Waltz, bad nymph, for quick jigs vex. Brick quiz whangs jumpy veldt fox bright vixens jump.",
+                "Quick zephyrs blow, vexing daft Jim. Sphinx of black quartz judge my vow and quiz pack.",
+                "Jackdaws love my big sphinx of quartz. How vexingly quick daft zebras jump around frequently!",
+                "The quick brown fox jumps over lazy dogs while amazing wizards cast powerful magical spells.",
+                "Cwm fjord bank glyphs vext quiz waltz bad nymph for quick jigs vex bright vixens jump dozy."
+            ]
+        };
+        
+        // Audio feedback system
+        class AudioManager {
+            constructor() {
+                this.audioContext = null;
+                this.initAudio();
+            }
+            
+            initAudio() {
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) {
+                    console.warn('Audio not supported');
+                }
+            }
+            
+            playTone(frequency, duration = 100, type = 'sine') {
+                if (!this.audioContext) return;
+                
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+                
+                oscillator.frequency.value = frequency;
+                oscillator.type = type;
+                
+                gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration / 1000);
+                
+                oscillator.start(this.audioContext.currentTime);
+                oscillator.stop(this.audioContext.currentTime + duration / 1000);
+            }
+            
+            playCorrect() {
+                this.playTone(800, 50);
+            }
+            
+            playIncorrect() {
+                this.playTone(200, 100, 'square');
+            }
+            
+            playLevelUp() {
+                [523, 659, 784].forEach((freq, i) => {
+                    setTimeout(() => this.playTone(freq, 200), i * 100);
+                });
+            }
+        }
+        
+        // Enhanced typing game with additional features
+        class EnhancedTypingGame extends TypingGame {
+            constructor() {
+                super();
+                this.audioManager = new AudioManager();
+                this.texts = advancedTexts; // Use enhanced text collection
+                this.lastInputWasCorrect = true;
+                this.streakCount = 0;
+                this.maxStreak = 0;
+                
+                // Add streak display
+                this.addStreakDisplay();
+                this.enhanceAchievements();
+            }
+            
+            addStreakDisplay() {
+                const streakCard = document.createElement('div');
+                streakCard.className = 'stat-card';
+                streakCard.innerHTML = `
+                    <div class="stat-label">Streak</div>
+                    <div class="stat-value" id="streak">0</div>
+                `;
+                document.querySelector('.stats-bar').appendChild(streakCard);
+                this.elements.streak = document.getElementById('streak');
+            }
+            
+            enhanceAchievements() {
+                this.achievements.push(
+                    { name: "Streak Master", condition: (stats) => stats.maxStreak >= 50, message: "50+ character streak!" },
+                    { name: "Lightning Fingers", condition: (stats) => stats.wpm >= 80, message: "80+ WPM achieved!" },
+                    { name: "Perfectionist Pro", condition: (stats) => stats.accuracy >= 99, message: "99%+ accuracy!" },
+                    { name: "Font Destroyer", condition: (stats) => stats.level >= 8, message: "Conquered 8 font levels!" },
+                    { name: "Nightmare Champion", condition: (stats) => stats.level >= 10 && stats.accuracy >= 95, message: "Mastered Chaos Mode!" }
+                );
+            }
+            
+            handleInput(e) {
+                if (!this.gameActive) return;
+                
+                const oldInput = this.userInput;
+                this.userInput = e.target.value;
+                this.currentPosition = this.userInput.length;
+                
+                // Check if the last character typed was correct
+                if (this.userInput.length > oldInput.length) {
+                    const lastChar = this.userInput[this.userInput.length - 1];
+                    const expectedChar = this.currentText[this.userInput.length - 1];
+                    
+                    if (lastChar === expectedChar) {
+                        this.streakCount++;
+                        this.maxStreak = Math.max(this.maxStreak, this.streakCount);
+                        if (this.streakCount % 10 === 0) {
+                            this.audioManager.playCorrect();
+                        }
+                        this.lastInputWasCorrect = true;
+                    } else {
+                        this.streakCount = 0;
+                        this.audioManager.playIncorrect();
+                        this.lastInputWasCorrect = false;
+                    }
+                }
+                
+                this.updateTextDisplay();
+                this.updateStats();
+                this.checkLevelProgression();
+                
+                if (this.userInput === this.currentText) {
+                    this.levelUp();
+                }
+            }
+            
+            levelUp() {
+                this.audioManager.playLevelUp();
+                super.levelUp();
+            }
+            
+            calculateStats() {
+                const stats = super.calculateStats();
+                stats.maxStreak = this.maxStreak;
+                stats.currentStreak = this.streakCount;
+                return stats;
+            }
+            
+            updateStats() {
+                super.updateStats();
+                this.elements.streak.textContent = this.streakCount;
+                
+                // Add visual feedback for streaks
+                if (this.streakCount >= 25) {
+                    this.elements.streak.style.color = '#dc2626';
+                    this.elements.streak.style.fontWeight = 'bold';
+                } else if (this.streakCount >= 10) {
+                    this.elements.streak.style.color = '#059669';
+                    this.elements.streak.style.fontWeight = 'bold';
+                } else {
+                    this.elements.streak.style.color = '#333';
+                    this.elements.streak.style.fontWeight = 'normal';
+                }
+            }
+            
+            resetStats() {
+                this.streakCount = 0;
+                this.maxStreak = 0;
+                super.resetStats();
+            }
+        }
+        
+        // Particle effects for enhanced visual feedback
+        class ParticleSystem {
+            constructor() {
+                this.particles = [];
+                this.canvas = document.createElement('canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.setupCanvas();
+                this.animate();
+            }
+            
+            setupCanvas() {
+                this.canvas.style.position = 'fixed';
+                this.canvas.style.top = '0';
+                this.canvas.style.left = '0';
+                this.canvas.style.pointerEvents = 'none';
+                this.canvas.style.zIndex = '999';
+                document.body.appendChild(this.canvas);
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+            }
+            
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+            
+            createParticle(x, y, color = '#667eea') {
+                this.particles.push({
+                    x, y,
+                    vx: (Math.random() - 0.5) * 4,
+                    vy: (Math.random() - 0.5) * 4 - 2,
+                    life: 60,
+                    maxLife: 60,
+                    color,
+                    size: Math.random() * 4 + 2
+                });
+            }
+            
+            update() {
+                this.particles = this.particles.filter(particle => {
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    particle.vy += 0.1; // gravity
+                    particle.life--;
+                    return particle.life > 0;
+                });
+            }
+            
+            render() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                this.particles.forEach(particle => {
+                    const alpha = particle.life / particle.maxLife;
+                    this.ctx.globalAlpha = alpha;
+                    this.ctx.fillStyle = particle.color;
+                    this.ctx.beginPath();
+                    this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                    this.ctx.fill();
+                });
+                
+                this.ctx.globalAlpha = 1;
+            }
+            
+            animate() {
+                this.update();
+                this.render();
+                requestAnimationFrame(() => this.animate());
+            }
+            
+            burst(x, y, count = 10, color = '#667eea') {
+                for (let i = 0; i < count; i++) {
+                    this.createParticle(x, y, color);
+                }
+            }
+        }
+        
+        // Initialize the enhanced game
+        document.addEventListener('DOMContentLoaded', () => {
+            const game = new EnhancedTypingGame();
+            const particles = new ParticleSystem();
+            
+            // Add particle effects for level ups
+            const originalLevelUp = game.levelUp.bind(game);
+            game.levelUp = function() {
+                const rect = game.elements.levelBadge.getBoundingClientRect();
+                particles.burst(rect.left + rect.width / 2, rect.top + rect.height / 2, 20, '#10b981');
+                originalLevelUp();
+            };
+            
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey || e.metaKey) {
+                    switch(e.key) {
+                        case 'Enter':
+                            e.preventDefault();
+                            game.elements.startBtn.click();
+                            break;
+                        case 'n':
+                            e.preventDefault();
+                            game.elements.newTextBtn.click();
+                            break;
+                        case 'r':
+                            e.preventDefault();
+                            game.elements.resetBtn.click();
+                            break;
+                    }
+                }
+                
+                // Easter egg: Konami code
+                if (e.key === 'ArrowUp') {
+                    game.konamiCode = (game.konamiCode || '') + 'U';
+                    if (game.konamiCode.endsWith('UUDDLRLRBA')) {
+                        game.showAchievement('Konami Master', 'Secret code activated!');
+                        game.currentLevel = Math.min(game.currentLevel + 2, 10);
+                        game.updateLevelDisplay();
+                        particles.burst(window.innerWidth / 2, window.innerHeight / 2, 50, '#f59e0b');
+                    }
+                }
+            });
+            
+            console.log('🎮 TypeChaos Pro initialized successfully!');
+            console.log('💡 Pro Tips:');
+            console.log('• Ctrl+Enter: Start/Stop game');
+            console.log('• Ctrl+N: New text');
+            console.log('• Ctrl+R: Reset stats');
+            console.log('• Tab: Skip to new text (during game)');
+            console.log('• Try the Konami code for a surprise! ↑↑↓↓←→←→BA');
+        });
+    </script>
+</body>
+</html>
