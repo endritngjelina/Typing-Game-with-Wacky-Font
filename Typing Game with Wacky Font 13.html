@@ -1,0 +1,1842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeMaster Pro - Progressive Font Challenge</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #60a5fa;
+            --secondary: #64748b;
+            --success: #10b981;
+            --success-light: #34d399;
+            --error: #ef4444;
+            --error-light: #f87171;
+            --warning: #f59e0b;
+            --warning-light: #fbbf24;
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #1a202c;
+            --bg-tertiary: #2d3748;
+            --bg-elevated: #374151;
+            --text-primary: #f7fafc;
+            --text-secondary: #e2e8f0;
+            --text-muted: #718096;
+            --text-accent: #90cdf4;
+            --border: #4a5568;
+            --border-light: #718096;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --gradient-error: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --blur: blur(10px);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(245, 158, 11, 0.06) 0%, transparent 50%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="0.5" fill="white" opacity="0.02"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .logo {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+            position: relative;
+            display: inline-block;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--gradient);
+            border-radius: 2px;
+            animation: logoGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes logoGlow {
+            from { opacity: 0.5; transform: translateX(-50%) scaleX(0.8); }
+            to { opacity: 1; transform: translateX(-50%) scaleX(1.2); }
+        }
+
+        .tagline {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 3px;
+            background: var(--gradient);
+            transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-light);
+        }
+
+        .stat-card:hover::before {
+            left: 0;
+        }
+
+        .stat-card:hover::after {
+            width: 200px;
+            height: 200px;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover .stat-value {
+            transform: scale(1.1);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+            position: relative;
+            z-index: 2;
+        }
+
+        .game-container {
+            background: var(--glass-bg);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .game-container.active::before {
+            opacity: 1;
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .level-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .level-badge {
+            background: var(--gradient);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+        }
+
+        .level-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .level-badge:hover::before {
+            left: 100%;
+        }
+
+        .progress-bar {
+            width: 220px;
+            height: 10px;
+            background: var(--bg-primary);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+            animation: progressShimmer 2s infinite;
+        }
+
+        @keyframes progressShimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            border: 2px solid transparent;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        .btn-secondary {
+            background: var(--glass-bg);
+            backdrop-filter: var(--blur);
+            color: var(--text-primary);
+            border: 2px solid var(--glass-border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-elevated);
+            border-color: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .text-display {
+            background: var(--bg-primary);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 1.5rem;
+            min-height: 140px;
+            font-size: 1.3rem;
+            line-height: 2;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .text-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .text-display.active {
+            border-color: var(--primary);
+            box-shadow: 
+                inset 0 2px 8px rgba(0,0,0,0.1),
+                0 0 0 3px rgba(59, 130, 246, 0.1),
+                var(--shadow-lg);
+        }
+
+        .text-display.active::before {
+            opacity: 1;
+            animation: textDisplayPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes textDisplayPulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        .char {
+            position: relative;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 4px;
+            padding: 2px 1px;
+        }
+
+        .char.correct {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success-light);
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.2);
+        }
+
+        .char.incorrect {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--error-light);
+            animation: errorShake 0.5s ease-in-out;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.2);
+        }
+
+        .char.current {
+            background: var(--primary);
+            color: white;
+            animation: currentPulse 1.2s infinite;
+            box-shadow: 0 0 16px rgba(59, 130, 246, 0.4);
+            transform: scale(1.05);
+        }
+
+        @keyframes currentPulse {
+            0%, 100% { 
+                opacity: 1; 
+                box-shadow: 0 0 16px rgba(59, 130, 246, 0.4);
+            }
+            50% { 
+                opacity: 0.7; 
+                box-shadow: 0 0 24px rgba(59, 130, 246, 0.6);
+            }
+        }
+
+        @keyframes errorShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+
+        .input-area {
+            width: 100%;
+            padding: 1.25rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: var(--glass-bg);
+            backdrop-filter: var(--blur);
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+            resize: none;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-sm);
+            min-height: 120px;
+        }
+
+        .input-area:focus {
+            border-color: var(--primary);
+            box-shadow: 
+                0 0 0 3px rgba(59, 130, 246, 0.1),
+                var(--shadow-md);
+            background: var(--bg-primary);
+        }
+
+        .input-area:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: var(--bg-tertiary);
+        }
+
+        .input-area::placeholder {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .timer {
+            font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+            font-size: 1.25rem;
+            color: var(--warning-light);
+            font-weight: 600;
+            background: var(--glass-bg);
+            backdrop-filter: var(--blur);
+            padding: 0.75rem 1.25rem;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            min-width: 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timer.warning {
+            color: var(--error-light);
+            animation: timerWarning 1s ease-in-out infinite;
+        }
+
+        @keyframes timerWarning {
+            0%, 100% { 
+                background: var(--glass-bg);
+                box-shadow: 0 0 0 rgba(239, 68, 68, 0.4);
+            }
+            50% { 
+                background: rgba(239, 68, 68, 0.1);
+                box-shadow: 0 0 16px rgba(239, 68, 68, 0.4);
+            }
+        }
+
+        .difficulty-selector {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .difficulty-btn {
+            padding: 0.75rem 1.25rem;
+            border: 2px solid var(--border);
+            background: var(--glass-bg);
+            backdrop-filter: var(--blur);
+            color: var(--text-secondary);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9rem;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .difficulty-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .difficulty-btn:hover {
+            background: var(--bg-elevated);
+            border-color: var(--primary-light);
+            transform: translateY(-2px);
+            color: var(--text-primary);
+        }
+
+        .difficulty-btn:hover::before {
+            left: 100%;
+        }
+
+        .difficulty-btn.active {
+            background: var(--gradient);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        .difficulty-btn.active::before {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+        .difficulty-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .results-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .results-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .results-content {
+            background: var(--glass-bg);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            max-width: 550px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.8) translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .results-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-success);
+        }
+
+        .results-modal.show .results-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .results-title {
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-success);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .result-item {
+            padding: 1.5rem;
+            background: var(--bg-primary);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .result-item:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .result-item:hover::before {
+            opacity: 1;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .achievements {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .achievement-badge {
+            display: inline-block;
+            background: var(--gradient);
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0.25rem;
+            animation: achievementSlideIn 0.6s ease forwards;
+            opacity: 0;
+            transform: translateX(-20px) scale(0.8);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .achievement-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .achievement-badge:hover::before {
+            left: 100%;
+        }
+
+        @keyframes achievementSlideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        .achievement-badge:nth-child(1) { animation-delay: 0.1s; }
+        .achievement-badge:nth-child(2) { animation-delay: 0.2s; }
+        .achievement-badge:nth-child(3) { animation-delay: 0.3s; }
+        .achievement-badge:nth-child(4) { animation-delay: 0.4s; }
+        .achievement-badge:nth-child(5) { animation-delay: 0.5s; }
+
+        .leaderboard {
+            background: var(--glass-bg);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .leaderboard::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient);
+        }
+
+        .leaderboard-title {
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.75rem;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .leaderboard-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .leaderboard-item:hover {
+            transform: translateX(8px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .leaderboard-item:hover::before {
+            opacity: 1;
+        }
+
+        .rank {
+            font-weight: 700;
+            font-size: 1.1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .settings-panel {
+            display: none;
+            background: var(--glass-bg);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .settings-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient);
+        }
+
+        .settings-panel.show {
+            display: block;
+            animation: settingsSlideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes settingsSlideDown {
+            from { 
+                opacity: 0; 
+                transform: translateY(-20px) scale(0.95); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
+        }
+
+        .setting-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .setting-label {
+            display: block;
+            margin-bottom: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .setting-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .setting-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .setting-input:hover {
+            border-color: var(--primary-light);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .game-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .controls {
+                justify-content: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Enhanced Font progression classes with better visual hierarchy */
+        .font-level-1 { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            font-weight: 400;
+        }
+        .font-level-2 { 
+            font-family: 'Times New Roman', 'Times', serif; 
+            font-weight: 500;
+        }
+        .font-level-3 { 
+            font-family: 'Arial', sans-serif; 
+            transform: rotate(0.5deg); 
+            letter-spacing: 0.5px;
+        }
+        .font-level-4 { 
+            font-family: 'Courier New', 'Monaco', monospace; 
+            letter-spacing: 1.5px; 
+            font-weight: 600;
+        }
+        .font-level-5 { 
+            font-family: 'Comic Sans MS', 'Marker Felt', cursive; 
+            transform: skew(-2deg); 
+            color: #ff9800;
+        }
+        .font-level-6 { 
+            font-family: 'Impact', 'Arial Black', sans-serif; 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5); 
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+        .font-level-7 { 
+            font-family: 'Brush Script MT', cursive; 
+            transform: rotate(-1deg) scale(1.05); 
+            color: #e91e63;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        .font-level-8 { 
+            font-family: 'Webdings', 'Symbol', fantasy; 
+            color: #9c27b0; 
+            filter: hue-rotate(45deg);
+            transform: scale(1.1);
+        }
+        .font-level-9 { 
+            font-family: 'Symbol', 'Wingdings', monospace; 
+            filter: blur(0.5px) contrast(1.2); 
+            transform: rotate(2deg) skew(1deg); 
+            color: #673ab7;
+        }
+        .font-level-10 { 
+            font-family: 'Wingdings', 'Webdings', fantasy; 
+            filter: blur(1px) hue-rotate(180deg) saturate(1.5); 
+            transform: rotate(-3deg) scale(0.95) skew(-2deg); 
+            color: #3f51b5;
+            text-shadow: 0 0 8px rgba(63, 81, 181, 0.5);
+        }
+
+        /* Advanced Visual Effects */
+        .typing-streak {
+            position: relative;
+        }
+
+        .typing-streak::after {
+            content: '🔥';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 1.2rem;
+            animation: streakBounce 0.6s ease-in-out infinite alternate;
+        }
+
+        @keyframes streakBounce {
+            from { transform: translateY(0) rotate(-10deg); }
+            to { transform: translateY(-5px) rotate(10deg); }
+        }
+
+        .perfect-accuracy {
+            position: relative;
+        }
+
+        .perfect-accuracy .stat-value {
+            animation: perfectGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes perfectGlow {
+            0%, 100% { 
+                text-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+            }
+            50% { 
+                text-shadow: 0 0 20px rgba(16, 185, 129, 0.8);
+            }
+        }
+
+        /* Loading and Transition States */
+        .loading {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.2), transparent);
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Mobile Enhancements */
+        @media (max-width: 768px) {
+            .stat-card {
+                padding: 1.5rem 1rem;
+            }
+            
+            .stat-value {
+                font-size: 2rem;
+            }
+            
+            .game-container {
+                padding: 1.5rem;
+            }
+            
+            .text-display {
+                padding: 1.5rem;
+                font-size: 1.1rem;
+                line-height: 1.6;
+            }
+            
+            .input-area {
+                font-size: 1rem;
+                min-height: 100px;
+            }
+            
+            .btn {
+                padding: 0.75rem 1.25rem;
+                font-size: 0.9rem;
+            }
+            
+            .difficulty-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+            }
+            
+            .results-content {
+                padding: 2rem 1.5rem;
+            }
+        }
+
+        /* Touch Device Optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .stat-card:hover,
+            .btn:hover,
+            .difficulty-btn:hover,
+            .leaderboard-item:hover,
+            .result-item:hover {
+                transform: none;
+            }
+            
+            .stat-card:active {
+                transform: scale(0.98);
+            }
+            
+            .btn:active {
+                transform: scale(0.96);
+            }
+        }
+
+        /* High Contrast Mode Support */
+        @media (prefers-contrast: high) {
+            :root {
+                --border: #ffffff;
+                --text-secondary: #ffffff;
+                --glass-bg: rgba(0, 0, 0, 0.8);
+            }
+        }
+
+        /* Reduced Motion Support */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="logo">TypeMaster Pro</h1>
+            <p class="tagline">Master typing through progressive font challenges</p>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="wpm-stat">0</div>
+                <div class="stat-label">Words Per Minute</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="accuracy-stat">100%</div>
+                <div class="stat-label">Accuracy</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="level-stat">1</div>
+                <div class="stat-label">Current Level</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="streak-stat">0</div>
+                <div class="stat-label">Best Streak</div>
+            </div>
+        </div>
+
+        <div class="game-container">
+            <div class="game-header">
+                <div class="level-info">
+                    <div class="level-badge" id="level-badge">Level 1 - Clean & Clear</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="controls">
+                    <div class="timer" id="timer">60s</div>
+                    <button class="btn btn-primary" id="start-btn">Start Challenge</button>
+                    <button class="btn btn-secondary" id="settings-btn">Settings</button>
+                </div>
+            </div>
+
+            <div class="difficulty-selector">
+                <button class="difficulty-btn active" data-time="30">Sprint (30s)</button>
+                <button class="difficulty-btn" data-time="60">Standard (60s)</button>
+                <button class="difficulty-btn" data-time="120">Marathon (2m)</button>
+                <button class="difficulty-btn" data-time="300">Endurance (5m)</button>
+            </div>
+
+            <div class="text-display" id="text-display">
+                <p>Click "Start Challenge" to begin your typing adventure. The font will become progressively more challenging as you advance through levels!</p>
+            </div>
+
+            <textarea class="input-area" id="input-area" placeholder="Your typing will appear here..." disabled></textarea>
+        </div>
+
+        <div class="settings-panel" id="settings-panel">
+            <div class="setting-group">
+                <label class="setting-label">Sound Effects</label>
+                <select class="setting-input" id="sound-setting">
+                    <option value="on">Enabled</option>
+                    <option value="off">Disabled</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <label class="setting-label">Theme</label>
+                <select class="setting-input" id="theme-setting">
+                    <option value="dark">Dark Mode</option>
+                    <option value="light">Light Mode</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <label class="setting-label">Difficulty Scaling</label>
+                <select class="setting-input" id="scaling-setting">
+                    <option value="normal">Normal</option>
+                    <option value="aggressive">Aggressive</option>
+                    <option value="gentle">Gentle</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="leaderboard">
+            <h3 class="leaderboard-title">🏆 Personal Records</h3>
+            <div id="leaderboard-content">
+                <div class="leaderboard-item">
+                    <span>Highest WPM</span>
+                    <span class="rank" id="best-wpm">0</span>
+                </div>
+                <div class="leaderboard-item">
+                    <span>Best Accuracy</span>
+                    <span class="rank" id="best-accuracy">0%</span>
+                </div>
+                <div class="leaderboard-item">
+                    <span>Highest Level</span>
+                    <span class="rank" id="best-level">1</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="results-modal" id="results-modal">
+        <div class="results-content">
+            <h2 class="results-title">🎉 Challenge Complete!</h2>
+            <div class="results-grid">
+                <div class="result-item">
+                    <div class="result-value" id="final-wpm">0</div>
+                    <div class="result-label">Words Per Minute</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-value" id="final-accuracy">0%</div>
+                    <div class="result-label">Accuracy</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-value" id="final-level">1</div>
+                    <div class="result-label">Level Reached</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-value" id="final-chars">0</div>
+                    <div class="result-label">Characters Typed</div>
+                </div>
+            </div>
+            <div class="achievements" id="achievements"></div>
+            <button class="btn btn-primary" id="play-again-btn">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        class TypingGame {
+            constructor() {
+                this.currentText = '';
+                this.currentPosition = 0;
+                this.startTime = null;
+                this.endTime = null;
+                this.isGameActive = false;
+                this.currentLevel = 1;
+                this.totalChars = 0;
+                this.correctChars = 0;
+                this.gameTimer = null;
+                this.timeRemaining = 60;
+                this.selectedTime = 60;
+                this.wpmHistory = [];
+                this.levelProgress = 0;
+                
+                this.levelDescriptions = [
+                    'Clean & Clear',
+                    'Classic Serif',
+                    'Slightly Tilted',
+                    'Monospace Madness',
+                    'Comic Chaos',
+                    'Bold Impact',
+                    'Brushed Script',
+                    'Symbol Confusion',
+                    'Blurry Mystery',
+                    'Ultimate Challenge'
+                ];
+
+                this.sampleTexts = [
+                    "The quick brown fox jumps over the lazy dog. This pangram contains every letter of the alphabet and is perfect for typing practice.",
+                    "Programming is not about what you know; it's about what you can figure out. The best way to learn is by doing and making mistakes.",
+                    "In the world of technology, adaptability is key. Those who embrace change and continue learning will always find success in their careers.",
+                    "Data structures and algorithms form the foundation of computer science. Understanding these concepts is crucial for any aspiring developer.",
+                    "Machine learning and artificial intelligence are revolutionizing industries. The future belongs to those who can harness these technologies.",
+                    "Software engineering is both an art and a science. It requires creativity, logic, and the ability to solve complex problems efficiently.",
+                    "The internet has connected billions of people worldwide. This global network has transformed how we communicate, work, and live our daily lives.",
+                    "Cybersecurity has become increasingly important in our digital age. Protecting sensitive information requires constant vigilance and updated knowledge.",
+                    "Cloud computing has changed how businesses operate. Scalability, flexibility, and cost-effectiveness are driving this technological revolution.",
+                    "Open source software has democratized technology development. Collaboration and knowledge sharing have accelerated innovation across all industries."
+                ];
+
+                this.initializeElements();
+                this.setupEventListeners();
+                this.loadSettings();
+                this.loadLeaderboard();
+            }
+
+            initializeElements() {
+                this.elements = {
+                    textDisplay: document.getElementById('text-display'),
+                    inputArea: document.getElementById('input-area'),
+                    startBtn: document.getElementById('start-btn'),
+                    settingsBtn: document.getElementById('settings-btn'),
+                    timer: document.getElementById('timer'),
+                    levelBadge: document.getElementById('level-badge'),
+                    progressFill: document.getElementById('progress-fill'),
+                    resultsModal: document.getElementById('results-modal'),
+                    playAgainBtn: document.getElementById('play-again-btn'),
+                    settingsPanel: document.getElementById('settings-panel'),
+                    difficultyBtns: document.querySelectorAll('.difficulty-btn'),
+                    
+                    // Stats
+                    wpmStat: document.getElementById('wpm-stat'),
+                    accuracyStat: document.getElementById('accuracy-stat'),
+                    levelStat: document.getElementById('level-stat'),
+                    streakStat: document.getElementById('streak-stat'),
+                    
+                    // Results
+                    finalWpm: document.getElementById('final-wpm'),
+                    finalAccuracy: document.getElementById('final-accuracy'),
+                    finalLevel: document.getElementById('final-level'),
+                    finalChars: document.getElementById('final-chars'),
+                    achievements: document.getElementById('achievements'),
+                    
+                    // Leaderboard
+                    bestWpm: document.getElementById('best-wpm'),
+                    bestAccuracy: document.getElementById('best-accuracy'),
+                    bestLevel: document.getElementById('best-level')
+                };
+            }
+
+            setupEventListeners() {
+                this.elements.startBtn.addEventListener('click', () => this.startGame());
+                this.elements.playAgainBtn.addEventListener('click', () => this.closeResultsAndRestart());
+                this.elements.settingsBtn.addEventListener('click', () => this.toggleSettings());
+                this.elements.inputArea.addEventListener('input', (e) => this.handleInput(e));
+                this.elements.inputArea.addEventListener('paste', (e) => e.preventDefault());
+                
+                this.elements.difficultyBtns.forEach(btn => {
+                    btn.addEventListener('click', () => this.selectDifficulty(btn));
+                });
+
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && this.elements.resultsModal.classList.contains('show')) {
+                        this.closeResultsAndRestart();
+                    }
+                });
+            }
+
+            selectDifficulty(btn) {
+                this.elements.difficultyBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.selectedTime = parseInt(btn.dataset.time);
+                this.timeRemaining = this.selectedTime;
+                this.elements.timer.textContent = `${this.selectedTime}s`;
+            }
+
+            startGame() {
+                this.resetGame();
+                this.currentText = this.sampleTexts[Math.floor(Math.random() * this.sampleTexts.length)];
+                this.renderText();
+                this.elements.inputArea.disabled = false;
+                this.elements.inputArea.focus();
+                this.elements.startBtn.textContent = 'Game Active';
+                this.elements.startBtn.disabled = true;
+                this.elements.textDisplay.classList.add('active');
+                this.isGameActive = true;
+                this.startTime = Date.now();
+                
+                this.gameTimer = setInterval(() => this.updateTimer(), 1000);
+            }
+
+            resetGame() {
+                this.currentPosition = 0;
+                this.totalChars = 0;
+                this.correctChars = 0;
+                this.levelProgress = 0;
+                this.timeRemaining = this.selectedTime;
+                this.elements.inputArea.value = '';
+                this.elements.inputArea.disabled = true;
+                this.elements.startBtn.textContent = 'Start Challenge';
+                this.elements.startBtn.disabled = false;
+                this.elements.textDisplay.classList.remove('active');
+                this.elements.timer.textContent = `${this.selectedTime}s`;
+                this.isGameActive = false;
+                
+                if (this.gameTimer) {
+                    clearInterval(this.gameTimer);
+                }
+            }
+
+            renderText() {
+                const chars = this.currentText.split('').map((char, index) => {
+                    let className = 'char';
+                    if (index < this.currentPosition) {
+                        className += this.elements.inputArea.value[index] === char ? ' correct' : ' incorrect';
+                    } else if (index === this.currentPosition) {
+                        className += ' current';
+                    }
+                    return `<span class="${className}">${char === ' ' ? '&nbsp;' : char}</span>`;
+                }).join('');
+                
+                this.elements.textDisplay.innerHTML = chars;
+                this.elements.textDisplay.className = `text-display font-level-${this.currentLevel} active`;
+            }
+
+            handleInput(e) {
+                if (!this.isGameActive) return;
+                
+                const inputValue = e.target.value;
+                this.currentPosition = inputValue.length;
+                this.totalChars = this.currentPosition;
+                
+                // Calculate correct characters
+                this.correctChars = 0;
+                for (let i = 0; i < this.currentPosition; i++) {
+                    if (inputValue[i] === this.currentText[i]) {
+                        this.correctChars++;
+                    }
+                }
+                
+                this.renderText();
+                this.updateStats();
+                this.updateProgress();
+                
+                // Check for completion
+                if (this.currentPosition >= this.currentText.length) {
+                    this.nextLevel();
+                }
+            }
+
+            updateStats() {
+                const timeElapsed = (Date.now() - this.startTime) / 1000;
+                const words = this.correctChars / 5;
+                const wpm = Math.round((words / timeElapsed) * 60);
+                const accuracy = this.totalChars > 0 ? Math.round((this.correctChars / this.totalChars) * 100) : 100;
+                
+                this.elements.wpmStat.textContent = wpm || 0;
+                this.elements.accuracyStat.textContent = `${accuracy}%`;
+                this.elements.levelStat.textContent = this.currentLevel;
+            }
+
+            updateProgress() {
+                const progress = (this.currentPosition / this.currentText.length) * 100;
+                this.elements.progressFill.style.width = `${progress}%`;
+                this.levelProgress = progress;
+            }
+
+            nextLevel() {
+                this.currentLevel++;
+                this.elements.levelBadge.textContent = `Level ${this.currentLevel} - ${this.levelDescriptions[this.currentLevel - 1] || 'Master Level'}`;
+                
+                // Get new text and reset position
+                this.currentText = this.sampleTexts[Math.floor(Math.random() * this.sampleTexts.length)];
+                this.currentPosition = 0;
+                this.elements.inputArea.value = '';
+                this.renderText();
+                
+                // Visual feedback for level up
+                this.elements.levelBadge.style.animation = 'none';
+                setTimeout(() => {
+                    this.elements.levelBadge.style.animation = 'pulse 0.5s ease';
+                }, 10);
+            }
+
+            updateTimer() {
+                this.timeRemaining--;
+                this.elements.timer.textContent = `${this.timeRemaining}s`;
+                
+                if (this.timeRemaining <= 0) {
+                    this.endGame();
+                }
+            }
+
+            endGame() {
+                this.isGameActive = false;
+                this.endTime = Date.now();
+                clearInterval(this.gameTimer);
+                
+                this.elements.inputArea.disabled = true;
+                this.elements.startBtn.disabled = false;
+                this.elements.startBtn.textContent = 'Start Challenge';
+                this.elements.textDisplay.classList.remove('active');
+                
+                this.showResults();
+                this.updateLeaderboard();
+            }
+
+            showResults() {
+                const timeElapsed = this.selectedTime;
+                const words = this.correctChars / 5;
+                const wpm = Math.round((words / timeElapsed) * 60);
+                const accuracy = this.totalChars > 0 ? Math.round((this.correctChars / this.totalChars) * 100) : 100;
+                
+                this.elements.finalWpm.textContent = wpm;
+                this.elements.finalAccuracy.textContent = `${accuracy}%`;
+                this.elements.finalLevel.textContent = this.currentLevel;
+                this.elements.finalChars.textContent = this.totalChars;
+                
+                // Generate achievements
+                this.generateAchievements(wpm, accuracy, this.currentLevel);
+                
+                this.elements.resultsModal.classList.add('show');
+            }
+
+            generateAchievements(wpm, accuracy, level) {
+                const achievements = [];
+                
+                if (wpm >= 60) achievements.push('🚀 Speed Demon');
+                if (wpm >= 40) achievements.push('⚡ Fast Fingers');
+                if (accuracy >= 95) achievements.push('🎯 Precision Master');
+                if (accuracy >= 90) achievements.push('✨ Accuracy Expert');
+                if (level >= 5) achievements.push('🏆 Level Champion');
+                if (level >= 3) achievements.push('📈 Progress Maker');
+                if (this.totalChars >= 500) achievements.push('📝 Typing Marathon');
+                if (this.totalChars >= 200) achievements.push('💪 Endurance');
+                if (wpm >= 30 && accuracy >= 85) achievements.push('⚖️ Balanced Typist');
+                
+                this.elements.achievements.innerHTML = achievements
+                    .map(achievement => `<span class="achievement-badge">${achievement}</span>`)
+                    .join('');
+            }
+
+            updateLeaderboard() {
+                const timeElapsed = this.selectedTime;
+                const words = this.correctChars / 5;
+                const wpm = Math.round((words / timeElapsed) * 60);
+                const accuracy = this.totalChars > 0 ? Math.round((this.correctChars / this.totalChars) * 100) : 100;
+                
+                let records = JSON.parse(localStorage.getItem('typingRecords') || '{}');
+                
+                if (!records.bestWpm || wpm > records.bestWpm) {
+                    records.bestWpm = wpm;
+                    this.elements.bestWpm.textContent = wpm;
+                }
+                
+                if (!records.bestAccuracy || accuracy > records.bestAccuracy) {
+                    records.bestAccuracy = accuracy;
+                    this.elements.bestAccuracy.textContent = `${accuracy}%`;
+                }
+                
+                if (!records.bestLevel || this.currentLevel > records.bestLevel) {
+                    records.bestLevel = this.currentLevel;
+                    this.elements.bestLevel.textContent = this.currentLevel;
+                }
+                
+                localStorage.setItem('typingRecords', JSON.stringify(records));
+            }
+
+            loadLeaderboard() {
+                const records = JSON.parse(localStorage.getItem('typingRecords') || '{}');
+                
+                this.elements.bestWpm.textContent = records.bestWpm || 0;
+                this.elements.bestAccuracy.textContent = `${records.bestAccuracy || 0}%`;
+                this.elements.bestLevel.textContent = records.bestLevel || 1;
+            }
+
+            closeResultsAndRestart() {
+                this.elements.resultsModal.classList.remove('show');
+                this.resetGame();
+                this.currentLevel = 1;
+                this.elements.levelBadge.textContent = `Level 1 - ${this.levelDescriptions[0]}`;
+                this.elements.progressFill.style.width = '0%';
+            }
+
+            toggleSettings() {
+                const panel = this.elements.settingsPanel;
+                panel.classList.toggle('show');
+            }
+
+            loadSettings() {
+                const settings = JSON.parse(localStorage.getItem('typingSettings') || '{}');
+                
+                if (settings.sound) {
+                    document.getElementById('sound-setting').value = settings.sound;
+                }
+                if (settings.theme) {
+                    document.getElementById('theme-setting').value = settings.theme;
+                    this.applyTheme(settings.theme);
+                }
+                if (settings.scaling) {
+                    document.getElementById('scaling-setting').value = settings.scaling;
+                }
+                
+                // Add change listeners
+                document.getElementById('sound-setting').addEventListener('change', (e) => {
+                    this.saveSetting('sound', e.target.value);
+                });
+                
+                document.getElementById('theme-setting').addEventListener('change', (e) => {
+                    this.saveSetting('theme', e.target.value);
+                    this.applyTheme(e.target.value);
+                });
+                
+                document.getElementById('scaling-setting').addEventListener('change', (e) => {
+                    this.saveSetting('scaling', e.target.value);
+                });
+            }
+
+            saveSetting(key, value) {
+                const settings = JSON.parse(localStorage.getItem('typingSettings') || '{}');
+                settings[key] = value;
+                localStorage.setItem('typingSettings', JSON.stringify(settings));
+            }
+
+            applyTheme(theme) {
+                if (theme === 'light') {
+                    document.documentElement.style.setProperty('--bg-primary', '#ffffff');
+                    document.documentElement.style.setProperty('--bg-secondary', '#f8fafc');
+                    document.documentElement.style.setProperty('--bg-tertiary', '#e2e8f0');
+                    document.documentElement.style.setProperty('--text-primary', '#1e293b');
+                    document.documentElement.style.setProperty('--text-secondary', '#475569');
+                    document.documentElement.style.setProperty('--border', '#e2e8f0');
+                } else {
+                    document.documentElement.style.setProperty('--bg-primary', '#0f172a');
+                    document.documentElement.style.setProperty('--bg-secondary', '#1e293b');
+                    document.documentElement.style.setProperty('--bg-tertiary', '#334155');
+                    document.documentElement.style.setProperty('--text-primary', '#f8fafc');
+                    document.documentElement.style.setProperty('--text-secondary', '#cbd5e1');
+                    document.documentElement.style.setProperty('--border', '#334155');
+                }
+            }
+
+            // Advanced features
+            generateCustomText() {
+                const commonWords = [
+                    'the', 'and', 'for', 'are', 'but', 'not', 'you', 'all', 'can', 'had', 'her', 'was', 'one', 'our', 'out', 'day', 'get', 'has', 'him', 'his', 'how', 'man', 'new', 'now', 'old', 'see', 'two', 'way', 'who', 'boy', 'did', 'its', 'let', 'put', 'say', 'she', 'too', 'use'
+                ];
+                
+                const sentences = [];
+                for (let i = 0; i < 3; i++) {
+                    const sentence = [];
+                    const wordCount = 8 + Math.floor(Math.random() * 7);
+                    
+                    for (let j = 0; j < wordCount; j++) {
+                        sentence.push(commonWords[Math.floor(Math.random() * commonWords.length)]);
+                    }
+                    
+                    sentences.push(sentence.join(' ') + '.');
+                }
+                
+                return sentences.join(' ');
+            }
+
+            calculateDifficulty() {
+                const baseTime = this.selectedTime;
+                const scaling = document.getElementById('scaling-setting').value;
+                
+                let multiplier = 1;
+                switch (scaling) {
+                    case 'aggressive':
+                        multiplier = 1.5;
+                        break;
+                    case 'gentle':
+                        multiplier = 0.7;
+                        break;
+                    default:
+                        multiplier = 1;
+                }
+                
+                return Math.max(this.currentLevel * multiplier, 1);
+            }
+
+            playSound(type) {
+                const soundSetting = document.getElementById('sound-setting').value;
+                if (soundSetting === 'off') return;
+                
+                // Create audio context for sound effects
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                switch (type) {
+                    case 'correct':
+                        oscillator.frequency.value = 800;
+                        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                        break;
+                    case 'incorrect':
+                        oscillator.frequency.value = 200;
+                        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                        break;
+                    case 'levelup':
+                        oscillator.frequency.value = 1200;
+                        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                        break;
+                }
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.1);
+            }
+
+            // Analytics and performance tracking
+            trackPerformance() {
+                const session = {
+                    timestamp: Date.now(),
+                    wpm: Math.round((this.correctChars / 5) / (this.selectedTime / 60)),
+                    accuracy: Math.round((this.correctChars / this.totalChars) * 100),
+                    level: this.currentLevel,
+                    duration: this.selectedTime,
+                    chars: this.totalChars
+                };
+                
+                let sessions = JSON.parse(localStorage.getItem('typingSessions') || '[]');
+                sessions.push(session);
+                
+                // Keep only last 50 sessions
+                if (sessions.length > 50) {
+                    sessions = sessions.slice(-50);
+                }
+                
+                localStorage.setItem('typingSessions', JSON.stringify(sessions));
+            }
+
+            getPerformanceInsights() {
+                const sessions = JSON.parse(localStorage.getItem('typingSessions') || '[]');
+                if (sessions.length < 3) return null;
+                
+                const recent = sessions.slice(-10);
+                const avgWpm = recent.reduce((sum, s) => sum + s.wpm, 0) / recent.length;
+                const avgAccuracy = recent.reduce((sum, s) => sum + s.accuracy, 0) / recent.length;
+                
+                return {
+                    averageWpm: Math.round(avgWpm),
+                    averageAccuracy: Math.round(avgAccuracy),
+                    improvement: recent[recent.length - 1].wpm - recent[0].wpm,
+                    sessionsPlayed: sessions.length
+                };
+            }
+        }
+
+        // Initialize the game when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const game = new TypingGame();
+            
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey || e.metaKey) {
+                    switch (e.key) {
+                        case 'Enter':
+                            e.preventDefault();
+                            if (!game.isGameActive) {
+                                game.startGame();
+                            }
+                            break;
+                        case 'r':
+                            e.preventDefault();
+                            game.resetGame();
+                            break;
+                    }
+                }
+            });
+
+            // Add touch support for mobile
+            let touchStartY = 0;
+            document.addEventListener('touchstart', (e) => {
+                touchStartY = e.touches[0].clientY;
+            });
+
+            document.addEventListener('touchend', (e) => {
+                const touchEndY = e.changedTouches[0].clientY;
+                const diff = touchStartY - touchEndY;
+                
+                // Swipe up to start game
+                if (diff > 50 && !game.isGameActive) {
+                    game.startGame();
+                }
+            });
+
+            // Performance monitoring
+            let performanceMetrics = {
+                frameRate: 0,
+                lastFrameTime: performance.now()
+            };
+
+            function updatePerformanceMetrics() {
+                const now = performance.now();
+                const deltaTime = now - performanceMetrics.lastFrameTime;
+                performanceMetrics.frameRate = 1000 / deltaTime;
+                performanceMetrics.lastFrameTime = now;
+                
+                requestAnimationFrame(updatePerformanceMetrics);
+            }
+            
+            updatePerformanceMetrics();
+
+            // Auto-save progress
+            setInterval(() => {
+                if (game.isGameActive) {
+                    const progress = {
+                        level: game.currentLevel,
+                        position: game.currentPosition,
+                        startTime: game.startTime,
+                        correctChars: game.correctChars,
+                        totalChars: game.totalChars
+                    };
+                    localStorage.setItem('gameProgress', JSON.stringify(progress));
+                }
+            }, 5000);
+
+            // Load saved progress
+            const savedProgress = localStorage.getItem('gameProgress');
+            if (savedProgress) {
+                const progress = JSON.parse(savedProgress);
+                // Could implement resume functionality here
+            }
+        });
+    </script>
+</body>
+</html>
